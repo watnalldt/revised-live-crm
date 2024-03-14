@@ -19,6 +19,8 @@ jobs:
     env:
       DATABASE_URL: 'sqlite://:memory:'
       SECRET_KEY: 'zt(6jlr#oquxm2t%ryh#n+-72p^(3knbf&q$5x16#o%1im-s7!'
+      RECAPTCHA_PUBLIC_KEY: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
+      RECAPTCHA_PRIVATE_KEY: ${{ secrets.RECAPTCHA_PRIVATE_KEY }}
 
     steps:
     - uses: actions/checkout@v3
