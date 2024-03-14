@@ -25,6 +25,7 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, []),
     DEBUG=(bool, False),
     DATABASE_CONN_MAX_AGE=(int, 600),
+    SENTRY_ENABLED=(bool, False),
 )
 env.read_env(str(BASE_DIR / ".env.development"))
 
