@@ -15,15 +15,10 @@ jobs:
       max-parallel: 4
       matrix:
         python-version: ['3.11']
-    services:
-      postgres:
-        image: postgres:latest
+
     env:
-      SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
-      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      DATABASE_URL: 'sqlite://:memory:'
+      SECRET_KEY: 'zt(6jlr#oquxm2t%ryh#n+-72p^(3knbf&q$5x16#o%1im-s7!'
 
     steps:
     - uses: actions/checkout@v3
