@@ -27,12 +27,15 @@ defusedxml==0.7.1
     # via odfpy
 diff-match-patch==20230430
     # via django-import-export
+dj-database-url==2.1.0
+    # via -r requirements.in
 dj-user-login-history==1.0.5
     # via -r requirements.in
 django==4.2.11
     # via
     #   -r requirements.in
     #   crispy-bootstrap5
+    #   dj-database-url
     #   dj-user-login-history
     #   django-admin-autocomplete-filter
     #   django-admin-logs
@@ -99,7 +102,7 @@ iniconfig==2.0.0
     # via pytest
 mailjet-rest==1.3.4
     # via django-mailjet
-markdown==3.5.2
+markdown==3.6
     # via -r requirements.in
 markuppy==1.14
     # via tablib
@@ -155,7 +158,9 @@ tablib==3.5.0
 termcolor==2.4.0
     # via pytest-sugar
 typing-extensions==4.10.0
-    # via psycopg
+    # via
+    #   dj-database-url
+    #   psycopg
 ua-parser==0.18.0
     # via user-agents
 urllib3==2.2.1

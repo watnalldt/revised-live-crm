@@ -26,6 +26,7 @@ django-admin-autocomplete-filter
 django-admin-logs
 djangoql
 openpyxl
+dj-database-url
 
 # Email
 django-mailjet

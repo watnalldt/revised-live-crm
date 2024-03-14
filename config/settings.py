@@ -14,6 +14,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+import dj_database_url
 import sentry_sdk
 from django.contrib.messages import constants as messages
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -23,6 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     ALLOWED_HOSTS=(list, []),
     DEBUG=(bool, False),
+    DATABASE_CONN_MAX_AGE=(int, 600),
 )
 env.read_env(str(BASE_DIR / ".env.development"))
 
@@ -117,9 +119,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL")}
-DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE")  # noqa F405
+# DATABASES = {"default": env.db("DATABASE_URL")}
+# DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE")  # noqa F405
 
+DATABASES = {
+    "default": dj_database_url.config(
+        conn_max_age=env("DATABASE_CONN_MAX_AGE"),
+    )
+}
 
 
 # Password validation
