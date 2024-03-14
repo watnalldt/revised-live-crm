@@ -1,0 +1,5 @@
+{% if contract.contract_type == "SEAMLESS" %}
+    {% include "clients/contracts/all_contracts/seamless_contracts.html" %}
+{% elif contract.contract_type == "NON_SEAMLESS" %}
+    {% include "clients/contracts/all_contracts/non_seamless_contracts.html" %}
+{% endif %}

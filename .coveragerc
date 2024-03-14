@@ -1,0 +1,7 @@
+[run]
+branch = True
+omit = */settings.py, */tests
+
+[report]
+show_missing = True
+skip_covered = False

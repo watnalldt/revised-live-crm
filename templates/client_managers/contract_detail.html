@@ -1,0 +1,67 @@
+{% extends "client_managers/client_managers_dashboard.html" %}
+{% load static i18n %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block content %}
+    <br>
+    <div class="container">
+        <h5 class="text-center">
+            <i class="fa-regular fa-address-card"></i>&nbsp;Business Name: {{ contract.business_name | title }}
+        </h5>
+        <hr>
+        <div class="row justify-content-start">
+            <div class="col-lg-6">
+                <p>Client: {{ contract.client }}</p>
+                <p>Site Address: {{ contract.site_address |title }}</p>
+                <p>Building Name: {{ contract.building_name }}</p>
+                {% if contract.account_number == None %}
+                    <p>{% trans "No Account Number" %}</p>
+                {% else %}
+                    <p>Account Number: {{ contract.account_number }}</p>
+                {% endif %}
+                <p>Company Reg Number: {{ contract.company_reg_number }}</p>
+                <p>Supplier: {{ contract.supplier }}</p>
+                <p>Utility Type: {{ contract.utility }}</p>
+                <p>MPAN/MPR: {{ contract.mpan_mpr }}</p>
+                {% if contract.vat == None %}
+                    <p>{% trans "Vat Rate: 0" %}</p>
+                {% else %}
+                    <p>VAT Rate: {{ contract.vat }}%</p>
+                {% endif %}
+                <p>Contract Start Date: {{ contract.contract_start_date }}</p>
+                {% if contract.contract_end_date == None %}
+                    <p>{% trans "Out of Contract" %}</p>
+                {% else %}
+                    <p>Contract End Date: {{ contract.contract_end_date }}</p>
+                    <p>Days Left On Contract: {{ contract.days_till }}</p>
+                {% endif %}
+            </div>
+            <div class="col-lg-6">
+                <p>Meter Serial Number: {{ contract.meter_serial_number }}</p>
+                <p>EAC: {{ contract.eac | floatformat:2 }}</p>
+                {% if contract.smart_meter == None %}
+                    {% trans "No Smart Meter" %}
+                {% else %}
+                    <p>Smart Meter: {{ contract.smart_meter }}</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% if contract.is_ooc is True or contract.contract_end_date is None or contract.meter_serial_number is None or contract.meter_serial_number is 'UMS' %}
+        <div class="container text-center mb-4">
+            <a href="" target="_blank">
+                <button class="btn btn-secondary btn-sm mt-3">Download PDF</button>
+            </a>
+        </div>
+    {% else %}
+        <div class="container text-center mb-4">
+            <a href="" target="_blank">
+                <button class="btn btn-secondary btn-sm mt-3">Download PDF</button>
+            </a>
+            <a href="">
+                <button class="btn btn-secondary btn-sm mt-3">Submit Meter Reading</button>
+            </a>
+        </div>
+    {% endif %}
+{% endblock content %}

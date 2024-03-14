@@ -1,0 +1,35 @@
+<!-- Footer -->
+<footer id="footer">
+    <div class="footer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9">
+                    <p>Tel: 0845 177 1376</p>
+                    <address>
+                        Energy Portfolio Limited
+                        43 Berkeley Square, London W1J 5FJ
+                        <br>
+                        Registered in England and Wales no. 08100311
+                    </address>
+                </div>
+                <div class="col-md-3">
+                    <ul class="list-unstyled">
+                        <li>
+                            <a href="{% url 'pages:privacy_policy' %}" class="text-decoration-none">Privacy Policy</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'pages:complaints_policy' %}"
+                               class="text-decoration-none">Complaints Policy</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <i class="fa-solid fa-copyright"></i> Copyright <strong>Energy Portfolio Limited</strong>. All Rights Reserved {% now "Y" %}
+        </div>
+    </div>
+</footer>
+<!-- End Footer -->

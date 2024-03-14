@@ -1,0 +1,60 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% load static i18n %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block content %}
+    <div class="container mt-4">
+        <h2 class="text-center mt-4 mb-4 fs-6 analytics-highlight">Your Clients</h2>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6">
+                <div id="am_list_container" style="display: none;">
+                    <table id="am_list" class="table table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Client Status</th>
+                                <th>View Client Contracts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if client_list %}
+                                {% for client in client_list %}
+                                    <tr>
+                                        <td>{{ client.client }}</td>
+                                        {% if client.is_lost == True %}
+                                            <td>{% trans "Lost" %}</td>
+                                        {% elif client.is_lost == False %}
+                                            <td>{% trans "Active" %}</td>
+                                        {% endif %}
+                                        <td>
+                                            <a href="{{ client.get_absolute_url }}"
+                                               class="btn btn-success text-center"><i class="fa-solid fa-eye"></i></a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+   $(document).ready(function () {
+    // Function to initialize DataTable
+    function initializeDataTable() {
+      // Show the table container
+      $('#am_list_container').css('display', 'block');
+    }
+
+    $('#am_list').DataTable();
+
+    // Call the function to initialize DataTable
+    initializeDataTable();
+  });
+    </script>
+{% endblock extra_js %}

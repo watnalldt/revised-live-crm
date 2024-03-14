@@ -1,0 +1,173 @@
+ /* WHOLE PAGE */
+ * { box-sizing: border-box; }
+
+ /* FULL HEIGHT FLEX BODY */
+ body {
+      padding: 0; margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Roboto', sans-serif;
+      font-size: 16px;
+      letter-spacing: 0;
+      text-transform: none;
+      color: #515151 !important;
+		}
+ #brand {
+   color: white;
+   text-transform: lowercase;
+ }
+#the_hero  {
+    background-image: url(../img/energy-portfolio-cover.jpg);
+    background-size: cover;
+    height: 100vh;
+    color: #fff;
+
+}
+
+
+
+ /* ALLOW MAIN TO FILL HEIGHT */
+ #pageMain { flex-grow: 1; }
+
+ /* HEADER */
+ #pageHeader {
+   background-color: #fff;
+ }
+/* SECTION HEADINGS */
+ .section-headings {
+  text-transform: uppercase;
+}
+ /* ALIGNMENT */
+.align-center {
+  text-align: center;
+}
+
+/* TESTIMONIALS */
+
+ i.quote{
+  font-size: 20px;
+  color: #008000;
+}
+
+.info .name, .job {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* ERRORS 404 AND 500 */
+
+/* ERROR POSITION */
+.error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+ /* ERROR TEXT MESSAGES */
+.error-txt1 {
+  font-size: 18px;
+}
+
+.error-txt2 {
+  font-size: 20px;
+}
+
+.error-404 {
+  font-size: 120px;
+}
+
+.error-403 {
+  font-size: 120px;
+}
+
+
+/* FOOTER */
+ footer {
+    background-color: #000000;
+    padding:15px 22px;
+    font-size: 14px;
+    color: white;
+    }
+
+footer a {
+        color: white;
+        }
+
+footer a.hover { color: #8ebf42;}
+
+/* ----------------------
+# DATATABLES WRAPPER
+-------------------------*/
+
+.dataTables_wrapper {
+
+    font-size: 13px;
+}
+
+
+/* ----------------------
+# DATATABLES PAGINATION
+-------------------------*/
+.dataTables_paginate .paginate_button {
+  border: 1px solid #008000 !important;
+  margin-top: 30px;
+  font-size: 13px;
+}
+
+/* ----------------------
+# DATATABLES BUTTONS
+-------------------------*/
+.dt-buttons {
+  margin-bottom: 12px ;
+}
+
+.font-size-14 {
+  font-size: 14px;
+}
+
+.fa-sharp.fa-solid.fa-circle {
+  color: mediumseagreen;
+
+}
+.btn.btn-primary {
+  background-color: mediumseagreen !important;
+
+}
+
+.card-header.custom-header {
+  background-color: mediumseagreen  !important;
+  color: white !important;
+  text-transform: uppercase !important;
+}
+
+.card-header.custom-header em {
+  /* This targets <em> tags within your custom-header for additional styling if needed */
+  color: inherit !important; /* This makes the emphasized text inherit the white color */
+}
+
+/* Custom CSS for the Your Contract Analytics Section */
+    .analytics-highlight {
+        background-color: mediumseagreen; /* Green background */
+        color: white; /* White text */
+        padding: 20px; /* Some padding for aesthetics */
+        border-radius: 5px; /* Optional: rounded corners */
+        margin-bottom: 20px; /* Space below the box */
+       text-transform: uppercase !important;
+    }
+
+@media (max-width: 576px) {
+    .card-body form .form-control,
+    .card-body form .btn.btn-primary {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .card-body form .btn {
+        width: auto; /* Adjust based on your design */
+    }
+    #start_date, #end_date {
+        display: block; /* Stack input fields vertically */
+    }
+}

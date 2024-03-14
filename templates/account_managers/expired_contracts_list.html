@@ -1,0 +1,49 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-12">
+                <h6 class="text-center">
+                    <strong>Expired Contracts</strong>
+                </h6>
+                <table id="ex_list" class="display nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Client</th>
+                            <th>Business Name</th>
+                            <th>Mpan/Mpr</th>
+                            <th>Contract Status</th>
+                            <th>Site Address</th>
+                            <th>Expired Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contract in expired_contracts %}
+                            <tr>
+                                <td>{{ contract.client }}</td>
+                                <td>{{ contract.business_name }}</td>
+                                <td>{{ contract.mpan_mpr }}</td>
+                                <td>{{ contract.contract_status }}</td>
+                                <td>{{ contract.site_address }}</td>
+                                <td>{{ contract.contract_end_date }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+    $(document).ready(function() {
+    $('#ex_list').DataTable( {
+        columnDefs: [ {
+            targets: 3,
+            render: DataTable.render.datetime('Do MMM YYYY')
+        } ]
+    } );
+} );
+    </script>
+{% endblock extra_js %}

@@ -1,0 +1,225 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% load static i18n %}
+{% load client_tags %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block content %}
+    <div class="container py-4 font-size-14">
+        <div class="row g-3">
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="card-title fs-6">Welcome</h2>
+                        <p class="card-text">You are logged in as {{ user.email }}</p>
+                        <p class="card-text">Your last login was {{ user.last_login }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="card-title text-center mt-2 fs-6">Search All Contracts</h2>
+                    </div>
+                    <div class="card-body">
+                        <form class="d-flex" action="{% url 'users:search_results' %}" method="get">
+                            <input name="q"
+                                   value="{{ query }}"
+                                   class="form-control me-2"
+                                   type="search"
+                                   placeholder="Search by mpan/mpr or meter serial number or client, business, address"
+                                   aria-label="Search">
+                            <button class="btn btn-primary" type="submit" aria-label="Search">
+                                <i class="fa-solid fa-magnifying-glass"></i><!-- Replace this with the correct class for your chosen icon library -->
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2 class="analytics-highlight text-center my-4 fs-6">Your Contract Analytics</h2>
+        <div class="row g-3">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="mb-4 text-center mt-2 fs-6">You Are Managing</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>{% total_clients user %}</td>
+                                    <td>Active Clients</td>
+                                </tr>
+                                <tr>
+                                    <td>{% total_clients request.user True %}</td>
+                                    <td>Clients Lost</td>
+                                </tr>
+                                <tr>
+                                    <td>{% total_contracts user %}</td>
+                                    <td>Total Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_type user contract_type="SEAMLESS" %}</td>
+                                    <td>Seamless Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_type user contract_type="NON_SEAMLESS" %}</td>
+                                    <td>Non Seamless Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_utility user utility_type="Electricity" %}</td>
+                                    <td>Electricity Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_utility user utility_type="Electricity -HH" %}</td>
+                                    <td>Electricity Contracts -HH</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_utility user utility_type="Electricity -NHH" %}</td>
+                                    <td>Electricity Contracts -NHH</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_utility user utility_type="Electricity -UMS" %}</td>
+                                    <td>Electricity Contracts -UMS</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_utility user utility_type="Gas" %}</td>
+                                    <td>Gas Contracts</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="mb-4 text-center mt-2 fs-6">Contract Status</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="LIVE" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:live_contracts' %}">Live Contracts</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="PRICING" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:pricing_contracts' %}">Pricing Contracts</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="OBJECTION" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:under_objection' %}">Under Objection</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="REMOVED" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:removed_contracts' %}">Removed Contracts</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="LOCKED" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:locked_contracts' %}">Locked Contracts</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="LOST" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:lost_contracts' %}">Lost Contracts</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_status request.user contract_status="NEW" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:new_contracts' %}">New Contracts</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% directors_approval request.user is_directors_approval="YES" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:directors_approval' %}">Directors Approval</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% out_of_contract request.user is_ooc="YES" %}</td>
+                                    <td>
+                                        <a href="{% url 'users:out_of_contract' %}">Out of Contract</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>{% expired_contracts request.user %}</td>
+                                    <td>
+                                        <a href="{% url 'users:expired_contracts' %}">Expired Contracts</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="mb-4 text-center mt-2 fs-6">Contracts By Supplier</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <td>{% contracts_by_supplier request.user supplier_name="SSE" %}</td>
+                                    <td>SSE Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_supplier request.user supplier_name="Crown" %}</td>
+                                    <td>Crown Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_supplier request.user supplier_name="E.ON Next" %}</td>
+                                    <td>E.ON Next Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_supplier request.user supplier_name="Corona" %}</td>
+                                    <td>Corona Contracts</td>
+                                </tr>
+                                <tr>
+                                    <td>{% contracts_by_supplier request.user supplier_name="Pozitive" %}</td>
+                                    <td>Pozitive Contracts</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Repeat the above block for each category (Contract Status, Contracts By Suppliers, Contracts Expiring By Month) -->
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="mb-4 text-center mt-2 fs-6">Search Expiration Dates</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'users:expiring_contracts' %}" method="get">
+                            <label for="start_date">&nbsp;Start Date:</label>
+                            <input type="text"
+                                   id="start_date"
+                                   name="start_date"
+                                   placeholder="DD/MM/YYYY">
+                            <label for="end_date">&nbsp;&nbsp;End Date:</label>
+                            <input type="text" id="end_date" name="end_date" placeholder="DD/MM/YYYY">
+                            <div class="text-center mt-2">
+                                <button class="btn btn-primary text" type="submit" aria-label="Search">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

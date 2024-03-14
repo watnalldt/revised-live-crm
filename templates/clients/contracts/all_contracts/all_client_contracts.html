@@ -1,0 +1,151 @@
+<!-- templates/clients/contracts/all_client_contracts.html -->
+{% extends "dashboards/staff_portal_base.html" %}
+{% load i18n %}
+{% load excel_tags %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block content %}
+    <div class="container">
+        <h2 class="text-center mt-4 mb-4 fs-6 analytics-highlight">{{ client }} - All Contracts</h2>
+        <hr>
+        <div class="row">
+            <div class="col-md-4">
+                <h6 class="mb-4">Account Manager: {{ client.account_manager }}</h6>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-12">
+                <div id="cl_list_container" style="display: none;">
+                    <table id="cl_list" class="display nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Business Name</th>
+                                <th>Site Address</th>
+                                <th>Supplier</th>
+                                <th>Utility</th>
+                                <th>MPAN/MPR</th>
+                                <th>Meter Serial Number</th>
+                                <th scope="col">Smart Meter</th>
+                                <th>Top Line</th>
+                                <th>EAC</th>
+                                <th>KVA</th>
+                                <th>Day Consumption</th>
+                                <th>Night Consumption</th>
+                                <th>Standing Charge</th>
+                                <th>Standing Charge Frequency</th>
+                                <th>Unit Rate 1</th>
+                                <th>Unit Rate 2</th>
+                                <th>Unit Rate 3</th>
+                                <th>Feed In Tariff</th>
+                                <th>CED</th>
+                                <th>D/A</th>
+                                <th>Detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contract in client.client_contracts.all %}
+                                <tr>
+                                    {% if contract.contract_type == "NON_SEAMLESS" %}
+                                        <td>{% trans "NS" %}</td>
+                                    {% elif contract.contract_type == "SEAMLESS" %}
+                                        <td>{% trans "S" %}</td>
+                                    {% endif %}
+                                    <td>{{ contract.contract_status }}</td>
+                                    <td>{{ contract.business_name | title }}</td>
+                                    <td>{{ contract.site_address }}</td>
+                                    <td>{{ contract.supplier }}</td>
+                                    <td>{{ contract.utility }}</td>
+                                    <td>{{ contract.mpan_mpr }}</td>
+                                    {% with contract.meter_serial_number|treat_as_string as treated_value %}<td>{{ treated_value }}</td>{% endwith %}
+                                    <td>{{ contract.smart_meter }}</td>
+                                    <td>{{ contract.top_line }}</td>
+                                    <td>{{ contract.eac }}</td>
+                                    <td>{{ contract.kva }}</td>
+                                    <td>{{ contract.day_consumption }}</td>
+                                    <td>{{ contract.night_consumption }}</td>
+                                    <td>{{ contract.standing_charge }}</td>
+                                    <td>{{ contract.sc_frequency }}</td>
+                                    <td>{{ contract.unit_rate_1 }}</td>
+                                    <td>{{ contract.unit_rate_2 }}</td>
+                                    <td>{{ contract.unit_rate_3 }}</td>
+                                    <td>{{ contract.feed_in_tariff }}</td>
+                                    {% if contract.is_ooc == "YES" %}
+                                        <td>{% trans "OOC" %}</td>
+                                    {% else %}
+                                        <td>{{ contract.contract_end_date }}</td>
+                                    {% endif %}
+                                    {% if contract.is_directors_approval == "YES" %}
+                                        <td>{% trans "D/A" %}</td>
+                                    {% else %}
+                                        <td></td>
+                                    {% endif %}
+                                    <td>
+                                        <a href="{% url 'clients:all_clients_contract_detail' contract.id %}">
+                                            <i class="fa-solid fa-file" style="font-size: 40px; color:green;"></i></a>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+  // Function to prompt for a filename and set it
+  function promptForFilename() {
+    swal("Enter the filename :", {
+      content: "input",
+    }).then(function(value) {
+      if (value.trim().length > 0) {
+        $('#exportButton').data('filename', value).trigger('click');
+      }
+    });
+  }
+
+  // Function to initialize DataTable
+  function initializeDataTable() {
+    // Show the table container
+    $('#cl_list_container').css('display', 'block');
+
+    $('#cl_list').DataTable({
+      "dom": 'Bfrtip',
+      scrollX: true,
+      buttons: [
+        {
+          extend: 'excelHtml5',
+          text:  '<i class="fa-solid fa-file-excel"></i> Excel',
+          exportOptions: {
+            columns: [ 0, ':visible' ]
+        },
+          autoFilter: true,
+          attr: { id: 'exportButton' },
+          sheetName: 'data',
+          title: '',
+          filename: function() {
+            return $('#exportButton').data('filename');
+          }
+        },
+        'colvis'
+      ]
+    });
+  }
+
+  // Event handler for the export button
+  $(document).on('mousedown', '#exportButton', function(e) {
+    promptForFilename();
+  });
+
+  // Initialize DataTable when document is ready
+  $(document).ready(function() {
+    initializeDataTable();
+  });
+
+    </script>
+{% endblock extra_js %}

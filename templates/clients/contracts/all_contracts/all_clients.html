@@ -1,0 +1,38 @@
+<!-- templates/clients/contracts/all_clients.html -->
+{% extends "dashboards/staff_portal_base.html" %}
+{% block content %}
+    <div class="container mt-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6">
+                <table id="am_list" class="table table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>View Client Contracts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for client in all_clients %}
+                            <tr>
+                                <td>{{ client.client }}</td>
+                                <td>
+                                    <a href="{% url 'clients:all_client_contracts' client.pk %}"
+                                       class="btn btn-success text-center"><i class="fa-solid fa-eye"></i></a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+    $(document).ready(function () {
+      $('#am_list').DataTable();
+    });
+
+    </script>
+{% endblock extra_js %}
