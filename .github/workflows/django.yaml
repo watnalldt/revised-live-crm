@@ -1,4 +1,4 @@
-name: Django CI
+name: Django Continuous Integration
 
 on:
   push:
@@ -8,12 +8,11 @@ on:
 
 jobs:
   build-and-test:
-
     runs-on: ubuntu-latest
 
     services:
       db:
-        image: postgres
+        image: postgres:latest
 
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
@@ -24,7 +23,6 @@ jobs:
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-
 
     strategy:
       matrix:
