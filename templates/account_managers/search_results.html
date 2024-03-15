@@ -122,6 +122,7 @@ $(document).ready(function() {
           "exportOptions": {
             "modifier": {
               "selected": true // Export only selected rows
+              "columns": ':visible'
             }
           },
           "customize": function (xlsx) {
@@ -147,6 +148,7 @@ $(document).ready(function() {
           "exportOptions": {
             "modifier": {
               "selected": null // Export all rows
+
             }
           },
           "customize": function (xlsx) {

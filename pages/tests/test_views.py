@@ -1,7 +1,7 @@
 import pytest
 from django.urls import reverse
 from django.test import RequestFactory
-from .views import HomePageView  # Adjust the import path according to your project structure
+from pages.views import HomePageView  # Adjust the import path according to your project structure
 
 
 @pytest.mark.django_db
