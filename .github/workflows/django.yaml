@@ -11,10 +11,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      max-parallel: 4
-      matrix:
-        python-version: ['3.11']
     services:
       postgres:
         image: postgres:latest
@@ -22,32 +18,37 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       RECAPTCHA_PUBLIC_KEY: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
       RECAPTCHA_PRIVATE_KEY: ${{ secrets.RECAPTCHA_PRIVATE_KEY }}
-      DJANGO_ADMINS: ${{ secrets.DJANGO_ADMINS}}
+      DJANGO_ADMINS: ${{ secrets.DJANGO_ADMINS }}
       POSTGRES_HOST: ${{ secrets.POSTGRES_HOST }}
       POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
 
+    strategy:
+      matrix:
+        python-version: ['3.11']
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Lint with Ruff
-      run: ruff .
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
 
-    - name: Run Tests
-      run: |
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint with Ruff
+        run: ruff .
+
+      - name: Run Tests
+        run: |
           coverage run -m pytest
