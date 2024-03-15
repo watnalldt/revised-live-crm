@@ -11,6 +11,10 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: postgres
+
     env:
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
       RECAPTCHA_PUBLIC_KEY: ${{ secrets.RECAPTCHA_PUBLIC_KEY }}
