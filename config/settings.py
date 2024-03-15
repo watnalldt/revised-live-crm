@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
 import environ
 import sentry_sdk
 from django.contrib.messages import constants as messages
@@ -122,21 +123,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 # DATABASES = {"default": env.db("DATABASE_URL")}
 # DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE")  # noqa F405
 
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         conn_max_age=env("DATABASE_CONN_MAX_AGE"),
-#     )
-# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST'),
-        'PORT': 5432
-    }
+    "default": dj_database_url.config(
+        conn_max_age=env("DATABASE_CONN_MAX_AGE"),
+    )
 }
+
 
 
 # Password validation
