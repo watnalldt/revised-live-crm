@@ -53,6 +53,9 @@ jobs:
       - name: Lint with Ruff
         run: ruff .
 
+      - name: Lint with Ruff
+        run: ruff .
+
       - name: Run Tests
         run: |
           coverage run -m pytest

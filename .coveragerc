@@ -1,7 +1,7 @@
 [run]
 branch = True
-omit = */settings.py, */tests
+omit = */config/*, */tests, */objections/*
 
 [report]
 show_missing = True
-skip_covered = False
+skip_covered = True

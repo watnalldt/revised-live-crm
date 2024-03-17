@@ -17,7 +17,7 @@ cffi==1.16.0
     # via cryptography
 charset-normalizer==3.3.2
     # via requests
-coverage==7.4.3
+coverage==7.4.4
     # via -r requirements.in
 crispy-bootstrap5==2024.2
     # via -r requirements.in
@@ -90,10 +90,12 @@ django-widget-tweaks==1.5.0
     # via -r requirements.in
 djangoql==0.18.1
     # via -r requirements.in
-djangorestframework==3.14.0
+djangorestframework==3.15.0
     # via -r requirements.in
 et-xmlfile==1.1.0
     # via openpyxl
+faker==12.0.1
+    # via mixer
 gunicorn==21.0.1
     # via -r requirements.in
 idna==3.6
@@ -108,6 +110,8 @@ markuppy==1.14
     # via tablib
 markupsafe==2.1.5
     # via werkzeug
+mixer==7.2.2
+    # via -r requirements.in
 odfpy==1.4.1
     # via tablib
 openpyxl==3.1.2
@@ -139,16 +143,18 @@ pytest-django==4.8.0
     # via -r requirements.in
 pytest-sugar==1.0.0
     # via -r requirements.in
-pytz==2024.1
-    # via djangorestframework
+python-dateutil==2.9.0.post0
+    # via faker
 pyyaml==6.0.1
     # via tablib
 requests==2.31.0
     # via mailjet-rest
-ruff==0.3.2
+ruff==0.3.3
     # via -r requirements.in
 sentry-sdk==1.42.0
     # via -r requirements.in
+six==1.16.0
+    # via python-dateutil
 sqlparse==0.4.4
     # via
     #   django

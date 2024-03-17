@@ -128,7 +128,6 @@ class ContractResource(resources.ModelResource):
             "commission_per_unit",
             "commission_per_contract",
             "partner_commission",
-
             "notes",
             "future_supplier",
             "future_contract_start_date",

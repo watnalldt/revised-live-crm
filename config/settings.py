@@ -77,7 +77,6 @@ PROJECT_APPS = [
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
-    "kolo.middleware.KoloMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",  # https://whitenoise.evans.io/
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -116,26 +115,15 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-# DATABASES = {"default": env.db("DATABASE_URL")}
-# DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE")  # noqa F405
-
-# DATABASES = {
-#     "default": dj_database_url.config(
-#         conn_max_age=env("DATABASE_CONN_MAX_AGE"),
-#     )
-# }
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('POSTGRES_DB'),
-        'USER': env('POSTGRES_USER'),
-        'PASSWORD': env('POSTGRES_PASSWORD'),
-        'HOST': env('POSTGRES_HOST'),
-        'PORT': 5432
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("POSTGRES_DB"),
+        "USER": env("POSTGRES_USER"),
+        "PASSWORD": env("POSTGRES_PASSWORD"),
+        "HOST": env("POSTGRES_HOST"),
+        "PORT": 5432,
+        "CONN_MAX_AGE": 600,
     }
 }
 

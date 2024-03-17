@@ -1,27 +1,57 @@
-import pytest
 from django.urls import reverse
 from django.test import RequestFactory
-from pages.views import HomePageView  # Adjust the import path according to your project structure
+from pages.views import HomePageView, MarketUpdateView, SeamlessUtilitiesView, PartnersView
 
 
-@pytest.mark.django_db
-class TestHomePageView:
+class BasePageViewTest:
     def setup_method(self):
-        # Setup RequestFactory to create requests
         self.factory = RequestFactory()
 
-    def test_home_page_view_uses_correct_template(self):
-        # Create a request object
-        request = self.factory.get(reverse('pages:home'))  # Use the name of the URL pattern for your home page
-        # Instantiate the View with our request
-        response = HomePageView.as_view()(request)
-        # Check if the correct template was used
-        assert response.template_name[0] == 'pages/index.html'
+    def get_response(self, url_name):
+        request = self.factory.get(reverse(url_name))
+        return self.view_class.as_view()(request)
 
-    def test_home_page_view_html_title(self):
-        request = self.factory.get(reverse('pages:home'))
-        response = HomePageView.as_view()(request)
-        # HTMLTitleMixin is supposed to set `html_title` in the context,
-        # so we check if it's correctly set
-        assert 'html_title' in response.context_data
-        assert response.context_data['html_title'] == 'Effectively Managing Energy Solutions'
+    def test_view_uses_correct_template(self):
+        response = self.get_response(self.url_name)
+        assert f"pages/{self.template_name}" in response.template_name
+
+    def test_view_html_title(self):
+        response = self.get_response(self.url_name)
+        assert "html_title" in response.context_data
+        assert response.context_data["html_title"] == self.expected_title
+
+
+class TestHomePageView(BasePageViewTest):
+    def setup_method(self):
+        super().setup_method()
+        self.view_class = HomePageView
+        self.url_name = "pages:home"
+        self.template_name = "index.html"
+        self.expected_title = "Effectively Managing Energy Solutions"
+
+
+class TestMarketUpdateView(BasePageViewTest):
+    def setup_method(self):
+        super().setup_method()
+        self.view_class = MarketUpdateView
+        self.url_name = "pages:market_update"
+        self.template_name = "market_update.html"
+        self.expected_title = "Energy Portfolio Market Update"
+
+
+class TestSeamlessUtilitiesView(BasePageViewTest):
+    def setup_method(self):
+        super().setup_method()
+        self.view_class = SeamlessUtilitiesView
+        self.url_name = "pages:seamless_utilities"
+        self.template_name = "seamless_utilities.html"
+        self.expected_title = "Energy Portfolio Seamless Utilities"
+
+
+class TestPartnersView(BasePageViewTest):
+    def setup_method(self):
+        super().setup_method()
+        self.view_class = PartnersView
+        self.url_name = "pages:partners"
+        self.template_name = "our_partners.html"
+        self.expected_title = "Energy Portfolio Our Partners"
