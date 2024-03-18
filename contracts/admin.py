@@ -62,11 +62,6 @@ class ContractResource(resources.ModelResource):
     utility = fields.Field(
         column_name="utility", attribute="utility", widget=ForeignKeyWidget(Utility, "utility")
     )
-    future_supplier = fields.Field(
-        column_name="future_supplier",
-        attribute="future_supplier",
-        widget=ForeignKeyWidget(Supplier, "supplier"),
-    )
 
     class Meta:
         model = Contract
@@ -129,13 +124,6 @@ class ContractResource(resources.ModelResource):
             "commission_per_contract",
             "partner_commission",
             "notes",
-            "future_supplier",
-            "future_contract_start_date",
-            "future_contract_end_date",
-            "future_unit_rate_1",
-            "future_unit_rate_2",
-            "future_unit_rate_3",
-            "future_standing_charge",
         ]
 
 
@@ -238,12 +226,8 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     "mpan_mpr",
                     "meter_serial_number",
                     "meter_status",
-                    "top_line",
                     "smart_meter",
-                    # "vat_rate",
-                    # "vat_declaration_sent",
-                    # "vat_declaration_date",
-                    # "vat_declaration_expires",
+                    "top_line",
                 ),
             },
         ),
@@ -307,9 +291,6 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "description": "The following only applies to seamless contracts",
                 "fields": (
                     ("supplier_coding",),
-                    # ("day_consumption", "night_consumption", "contract_value"),
-                    # ("standing_charge", "sc_frequency"),
-                    # ("unit_rate_1", "unit_rate_2", "unit_rate_3"),
                     "seamless_status",
                     "seamless_updated",
                 ),
@@ -328,21 +309,6 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 ),
             },
         ),
-        # (
-        #     "Rates",
-        #     {
-        #         "description": "Enter the following data",
-        #         "fields": (
-        #             "pence_per_kilowatt",
-        #             "day_kilowatt_hour_rate",
-        #             "night_rate",
-        #             "annualised_budget",
-        #             ("day_consumption", "night_consumption", "contract_value"),
-        #             ("standing_charge", "sc_frequency"),
-        #             ("unit_rate_1", "unit_rate_2", "unit_rate_3"),
-        #         ),
-        #     },
-        # ),
         (
             "Commissions",
             {
@@ -350,26 +316,11 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "fields": (
                     "commission_per_annum",
                     "commission_per_unit",
-                    "partner_commission",
                     "commission_per_contract",
+                    "partner_commission",
                 ),
             },
         ),
-        # (
-        #     "Future Contract Information",
-        #     {
-        #         "description": "Enter future contract information",
-        #         "fields": (
-        #             "future_contract_start_date",
-        #             "future_contract_end_date",
-        #             "future_supplier",
-        #             "future_unit_rate_1",
-        #             "future_unit_rate_2",
-        #             "future_unit_rate_3",
-        #             "future_standing_charge",
-        #         ),
-        #     },
-        # ),
         ("Notes", {"description": "Additional Information", "fields": ("notes",)}),
     )
     list_filter = [
@@ -391,13 +342,11 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         StartDateIsNullFilter,
         ContractFilter,
         "meter_status",
-        FutureSupplierFilter,
     ]
     autocomplete_fields = [
         "client",
         "client_manager",
         "supplier",
-        "future_supplier",
     ]
     search_help_text = "Search by MPAN/MPR or Business Name, Client Name, Meter Serial Number"
     search_fields = (
