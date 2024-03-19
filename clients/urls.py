@@ -26,5 +26,11 @@ urlpatterns = [
         views.AllContractsDetailView.as_view(),
         name="all_clients_contract_detail",
     ),
+    path("meter_reading/<int:pk>/", views.meter_reading, name="meter_reading"),
+    path(
+        "multiple_meter_reading/<int:pk>/",
+        views.multiple_meter_reading,
+        name="multiple_meter_reading",
+    ),
     # path("pdf/<pk>", views.contracts_render_pdf_view, name="contract_pdf_view"),
 ]

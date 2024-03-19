@@ -59,9 +59,21 @@
             <a href="" target="_blank">
                 <button class="btn btn-secondary btn-sm mt-3">Download PDF</button>
             </a>
-            <a href="">
-                <button class="btn btn-secondary btn-sm mt-3">Submit Meter Reading</button>
-            </a>
+            <div class="container d-flex align-items-center justify-content-center">
+                <div class="row">
+                    <p class="text-center">
+                        <strong>For a single meter reading click Single Meter or for multiple meter readings click Multiple Meters</strong>
+                    </p>
+                    <div class="col-sm-12 text-center">
+                        <a href="{% url 'clients:meter_reading' contract.id %}">
+                            <button class="btn btn-secondary btn-md mt-3 mb-4">Single Meter</button>
+                        </a>
+                        <a href="{% url 'clients:multiple_meter_reading' contract.pk %}">
+                            <button class="btn btn-secondary btn-md mt-3 mb-4">Multiple Meters</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock content %}

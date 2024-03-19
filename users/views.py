@@ -14,6 +14,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.generic import ListView, TemplateView, View
 
+
 from clients.models import Client
 from contracts.models import Contract
 from core.decorators import account_manager_required, client_manager_required

@@ -1,0 +1,28 @@
+{% extends "dashboards/client_portal_base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <br>
+    <div class="row justify-content-center">
+        <h4 class="text-center mb-3">Multiple Meter Reading Submission</h4>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-body">
+                    <form action="{% url 'clients:multiple_meter_reading' contract.id %}"
+                          method="post"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form | crispy }}
+                        <br>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <input type="submit" class="btn btn-secondary btn-sm mt-3" value="Submit">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock content %}
+{% block extra_js %}
+{% endblock extra_js %}
