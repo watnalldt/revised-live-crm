@@ -57,10 +57,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Lint with Ruff
-        run: ruff .
+        run:  ruff --output-format=github .
 
-      - name: Lint with Ruff
-        run: ruff .
+      - name: Format with black
+        run: black .
 
       - name: Run Tests
         run: |
