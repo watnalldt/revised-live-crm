@@ -60,7 +60,7 @@ jobs:
         run:  ruff check .
 
       - name: Format with black
-        run: black check .
+        run: black --check .
 
       - name: Run Tests
         run: |
