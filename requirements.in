@@ -56,3 +56,4 @@ coverage
 mixer
 
 ruff
+black
