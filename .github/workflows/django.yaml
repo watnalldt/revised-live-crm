@@ -63,5 +63,5 @@ jobs:
         run: black .
 
       - name: Run Tests
-        run: ruff check .
+        run: |
           coverage run -m pytest
