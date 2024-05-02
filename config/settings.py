@@ -158,7 +158,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTHENTICATION_BACKENDS = [
     # AxesStandaloneBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
-    # "axes.backends.AxesStandaloneBackend",
+    "axes.backends.AxesStandaloneBackend",
     # Django ModelBackend is the default authentication backend.
     "django.contrib.auth.backends.ModelBackend",
 ]
@@ -283,16 +283,16 @@ LOGGING = {
     },
 }
 
-# AXES_FAILURE_LIMIT = 3  # How many times a user can fail to log in
-# AXES_COOLOFF_TIME = timedelta(minutes=10)  # How long before a user can fail to log in
-# AXES_RESET_ON_SUCCESS = True  # Reset failed login attempts after successful login
-# AXES_LOCKOUT_TEMPLATE = "account_locked.html"
-# AXES_RESET_COOL_OFF_ON_FAILURE_DURING_LOCKOUT = False
-# AXES_LOCKOUT_PARAMETERS = [
-#     [
-#         "username",
-#     ]
-# ]
+AXES_FAILURE_LIMIT = 3  # How many times a user can fail to log in
+AXES_COOLOFF_TIME = timedelta(minutes=10)  # How long before a user can fail to log in
+AXES_RESET_ON_SUCCESS = True  # Reset failed login attempts after successful login
+AXES_LOCKOUT_TEMPLATE = "account_locked.html"
+AXES_RESET_COOL_OFF_ON_FAILURE_DURING_LOCKOUT = False
+AXES_LOCKOUT_PARAMETERS = [
+    [
+        "username",
+    ]
+]
 
 # Auto Logout
 AUTO_LOGOUT = {
