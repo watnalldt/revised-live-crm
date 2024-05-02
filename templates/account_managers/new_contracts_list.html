@@ -1,0 +1,182 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% load static %}
+{% load excel_tags %}
+{% load i18n %}
+{% block extra_head %}
+    <style>
+#search_list {
+    display: none;
+}
+
+/* Fade-in animation for table body */
+.fade-in {
+    animation: fadeInAnimation ease 1s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+    </style>
+{% endblock extra_head %}
+{% block content %}
+    <div class="container mt-4 mb-4 font-size-14">
+        <h2 class="text-center fs-6 analytics-highlight">New Contracts</h2>
+        <table id="search_list" class="nowrap" style="width:100%;">
+            <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Business Name</th>
+                    <th scope="col">Site Address</th>
+                    <th scope="col">Supplier</th>
+                    <th scope="col">Utility</th>
+                    <th scope="col">MPAN/MPR</th>
+                    <th scope="col">Meter Serial Number</th>
+                    <th scope="col">Top Line</th>
+                    <th scope="col">EAC</th>
+                    <th scope="col">KVA</th>
+                    <th scope="col">Day Consumption</th>
+                    <th scope="col">Night Consumption</th>
+                    <th scope="col">Standing Charge</th>
+                    <th scope="col">Standing Charge Frequency</th>
+                    <th scope="col">Unit Rate 1</th>
+                    <th scope="col">Unit Rate 2</th>
+                    <th scope="col">Unit Rate 3</th>
+                    <th scope="col">Feed In Tariff</th>
+                    <th scope="col">Contract Start Date</th>
+                    <th scope="col">Contract End Date</th>
+                    <th scope="col">Directors Approval</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contract in new_contracts %}
+                    <tr>
+                        {% if contract.contract_type == "NON_SEAMLESS" %}
+                            <td>{% trans "NS" %}</td>
+                        {% elif contract.contract_type == "SEAMLESS" %}
+                            <td>{% trans "S" %}</td>
+                        {% endif %}
+                        <td>{{ contract.contract_status }}</td>
+                        <td>{{ contract.client }}</td>
+                        <td>{{ contract.business_name }}</td>
+                        <td>{{ contract.site_address }}</td>
+                        <td>{{ contract.supplier }}</td>
+                        <td>{{ contract.utility }}</td>
+                        <td>{{ contract.mpan_mpr }}</td>
+                        {% with contract.meter_serial_number|treat_as_string as treated_value %}<td>{{ treated_value }}</td>{% endwith %}
+                        <td>{{ contract.top_line }}</td>
+                        <td>{{ contract.eac }}</td>
+                        <td>{{ contract.kva }}</td>
+                        <td>{{ contract.day_consumption }}</td>
+                        <td>{{ contract.night_consumption }}</td>
+                        <td>{{ contract.standing_charge }}</td>
+                        <td>{{ contract.sc_frequency }}</td>
+                        <td>{{ contract.unit_rate_1 }}</td>
+                        <td>{{ contract.unit_rate_2 }}</td>
+                        <td>{{ contract.unit_rate_3 }}</td>
+                        <td>{{ contract.feed_in_tariff }}</td>
+                        <td>{{ contract.contract_start_date }}</td>
+                        {% if contract.is_ooc == "YES" %}
+                            <td>{% trans "OOC" %}</td>
+                        {% else %}
+                            <td>{{ contract.contract_end_date }}</td>
+                        {% endif %}
+                        {% if contract.is_directors_approval == "YES" %}
+                            <td>{% trans "D/A" %}</td>
+                        {% else %}
+                            <td></td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <p class="text-center">
+                        <strong>No contracts found!</strong>
+                    </p>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+$(document).ready(function() {
+  // Initialize DataTable with custom export functionality
+  function initializeDataTable() {
+    const table = $('#search_list').DataTable({
+      "dom": 'Bfrtip',
+      "scrollX": true,
+      "select": "multi",
+      "buttons": [
+        {
+          "extend": 'excelHtml5',
+          "text": '<i class="fa fa-file-excel-o"></i> Export Selected',
+          "titleAttr": 'Export selected rows to Excel',
+          "className": 'btn btn-success',
+          "exportOptions": {
+            "modifier": {
+              "selected": true // Export only selected rows
+            }
+          },
+          "customize": function (xlsx) {
+            const sheet = xlsx.xl.worksheets['sheet1.xml'];
+            $('row c[r^="D"]', sheet).attr('s', '2'); // Assuming meter serial numbers are in column D
+          },
+          "action": function (e, dt, button, config) {
+            swal("Enter the filename for selected export:", {
+              content: "input",
+            }).then(function (value) {
+              if (value && value.trim().length > 0) {
+                config.filename = value;
+                $.fn.dataTable.ext.buttons.excelHtml5.action.call(dt.button(button), e, dt, button, config);
+              }
+            });
+          }
+        },
+        {
+          "extend": 'excelHtml5',
+          "text": '<i class="fa fa-file-excel-o"></i> Export All',
+          "titleAttr": 'Export all rows to Excel',
+          "className": 'btn btn-primary',
+          "exportOptions": {
+            "modifier": {
+              "selected": null // Export all rows
+            }
+          },
+          "customize": function (xlsx) {
+            const sheet = xlsx.xl.worksheets['sheet1.xml'];
+            $('row c[r^="D"]', sheet).attr('s', '2'); // Assuming meter serial numbers are in column D
+          },
+          "action": function (e, dt, button, config) {
+            swal("Enter the filename for full export:", {
+              content: "input",
+            }).then(function (value) {
+              if (value && value.trim().length > 0) {
+                config.filename = value;
+                $.fn.dataTable.ext.buttons.excelHtml5.action.call(dt.button(button), e, dt, button, config);
+              }
+            });
+          }
+        },
+      ],
+      "initComplete": function (settings, json) {
+        $('#search_list').fadeIn('slow');
+      },
+    });
+  }
+
+  // Call the initializeDataTable function to activate the DataTable
+  initializeDataTable();
+
+});
+
+
+    </script>
+    <script src="{% static 'js/fade.js' %}"></script>
+{% endblock extra_js %}

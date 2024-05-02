@@ -1,0 +1,39 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% block extra_head %}
+    {{ form.media.css }}
+{% endblock extra_head %}
+{% block content %}
+    <div class="container d-flex justify-content-center mt-5"
+         style="width: 35%">
+        <div class="col mt-5">
+            <h2 class="text-center fs-6 analytics-highlight">Add/Edit Client Contact</h2>
+            <form action="" method="post">
+                {% csrf_token %}
+                {{ form | crispy }}
+                <div class="container d-flex justify-content-center mb-4"
+                     style="width: 50%">
+                    <input type="submit"
+                           class="btn btn-primary btn-sm"
+                           value="Submit"
+                           style="margin-right: 30px;
+                                  margin-top: 30px" />
+                    <input type="submit"
+                           class="btn btn-danger btn-sm"
+                           style="margin-top: 30px"
+                           onclick="window.location=''; return false;"
+                           value="Cancel" />
+                </div>
+            </form>
+            <div class="text-center mb-3">
+                <!-- Link to add a new job title -->
+                <a href="{% url 'contacts:create_job_title' %}" class="btn btn-primary">Add New Job Title</a>
+            </div>
+        </div>
+    </div>
+    <!-- END BOOTSTRAP FORM -->
+{% endblock content %}
+{% block extra_js %}
+    {{ form.media.js }}
+{% endblock extra_js %}

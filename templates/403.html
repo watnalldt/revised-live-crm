@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block html_title %}
+    EP | Access Denied (403)
+{% endblock html_title %}
+<!-- Body Content -->
+{% block content %}
+    <div class="text-center error">
+        <div class="text-center text-danger error-body">
+            {% block error-body %}
+                <span class="text-danger mb-5 error-404">403</span>
+                <h5 class="text-danger mb-3 mt-3">YOU ARE NOT ENTITLED TO VIEW THIS PAGE</h5>
+            </div>
+        </div>
+    {% endblock error-body %}
+{% endblock content %}

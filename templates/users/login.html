@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block html_title %}
+    Energy Portfolio CRM
+{% endblock html_title %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-title text-center">
+                        <a class="btn btn-secondary mt-4" style="cursor: default;">
+                            <i class="fas fa-lock"></i>&nbsp;&nbsp;EP CONTRACT MANAGEMENT LOGIN
+                        </a>
+                    </div>
+                    <div class="card-body mt-4  align-center" id="card-login">
+                        <form method="post"
+                              action="{% url 'users:login' %}"
+                              autocomplete="off"
+                              novalidate>
+                            {% csrf_token %}
+                            {{ form | crispy }}
+                            <div class="text-center">
+                                <input class="btn btn-success btn-sm mt-3"
+                                       type="submit"
+                                       value="Enter"
+                                       id="btn-enter">
+                                <a href="{% url 'users:forgot_password' %}"
+                                   class="btn btn-danger btn-sm id=btn-password mt-3">Password Reset</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+{% endblock extra_js %}

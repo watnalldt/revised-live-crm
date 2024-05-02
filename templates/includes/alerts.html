@@ -1,0 +1,8 @@
+{% if messages %}
+    {% for message in messages %}
+        <div id="message_timeout"
+             class="alert float-center text-center {% if message.tags %}{{ message.tags }}{% endif %}">
+            <i class="fa-solid fa-circle-check"></i>&nbsp;{{ message }}
+        </div>
+    {% endfor %}
+{% endif %}

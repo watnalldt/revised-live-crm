@@ -1,0 +1,132 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% load static i18n %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block content %}
+    <div class="container-fluid font-size-14">
+        <div class="text-center my-4">
+            <h2 class="fs-6">Account Manager: {{ request.user.email }}</h2>
+            <h2 class="fs-6">Client: {{ contract.client }}</h2>
+            <h2 class="fs-6">Site Address: {{ contract.site_address }}</h2>
+        </div>
+        <hr>
+        <div class="row">
+            <!-- Client Information Card -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h6 class="card-title text-center mt-2">Contract Detail</h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                {% if contract.account_number == None %}
+                                    {% trans "" %}
+                                {% else %}
+                                    Account Number: {{ contract.account_number }}
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">Company Reg Number: {{ contract.company_reg_number }}</li>
+                            <li class="list-group-item">Contract Status: {{ contract.contract_status }}</li>
+                            <li class="list-group-item">
+                                {% if contract.contract_type == "NON_SEAMLESS" %}
+                                    Contract Type: {% trans "Non Seamless" %}
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">Supplier: {{ contract.supplier }}</li>
+                            <li class="list-group-item">Utility Type: {{ contract.utility }}</li>
+                            <li class="list-group-item">
+                                {% if contract.vat_rate == "UNKNOWN" %}
+                                    {% trans "Vat Rate: 0" %}
+                                {% else %}
+                                    VAT Rate: {{ contract.vat_rate }}
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">Contract Start Date: {{ contract.contract_start_date }}</li>
+                            <li class="list-group-item">
+                                {% if contract.contract_end_date == None %}
+                                    {% trans "No Contract End Date" %}
+                                {% elif contract.is_ooc == "YES" %}
+                                    {% trans "Out of Contract" %}
+                                {% else %}
+                                    Contract End Date: {{ contract.contract_end_date }}
+                                </li>
+                                <li class="list-group-item">Days Left On Contract: {{ contract.days_till }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Contract Status Card -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class=" fs-6 card-title text-center mt-2">Meter Details</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                {% if contract.smart_meter == None %}
+                                    {% trans "No Smart Meter" %}
+                                {% else %}
+                                    Smart Meter: {{ contract.smart_meter }}
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">Meter Serial Number: {{ contract.meter_serial_number }}</li>
+                            <li class="list-group-item">MPAN/MPR: {{ contract.mpan_mpr }}</li>
+                            <li class="list-group-item">Top Line: {{ contract.top_line }}</li>
+                            <li class="list-group-item">EAC: {{ contract.eac }}</li>
+                            <li class="list-group-item">KVA: {{ contract.kva }}</li>
+                            <li class="list-group-item">Day Consumption: {{ contract.day_consumption }}</li>
+                            <li class="list-group-item">Night Consumption: {{ contract.night_consumption }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Pricing Details Card -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="fs-6 card-title text-center mt-2">Contract Rates</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Unit Rate 1: {{ contract.unit_rate_1 }}</li>
+                            <li class="list-group-item">Unit Rate 2: {{ contract.unit_rate_2 }}</li>
+                            <li class="list-group-item">Unit Rate 3: {{ contract.unit_rate_3 }}</li>
+                            <li class="list-group-item">Feed In Tariff: {{ contract.feed_in_tariff }}</li>
+                            <li class="list-group-item">Standing Charge: £ {{ contract.standing_charge }}</li>
+                            <li class="list-group-item">Standing Charge Frequency: {{ contract.sc_frequency }}</li>
+                            <li class="list-group-item">Pence per Kilowatt: {{ contract.pence_per_kilowatt }}</li>
+                            <li class="list-group-item">Day Kilowatt Hour Rate: {{ contract.day_kilowatt_hour_rate }}</li>
+                            <li class="list-group-item">Night Rate: {{ contract.night_rate }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Future Contract Details Card -->
+            <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                <div class="card shadow">
+                    <div class="card-header custom-header">
+                        <h2 class="fs-6 card-title text-center mt-2">Future Contract Rates</h2>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Start Date: {{ contract.future_contract_start_date }}</li>
+                            <li class="list-group-item">End Date: {{ contract.future_contract_end_date }}</li>
+                            <li class="list-group-item">Unit Rate 1: {{ contract.future_unit_rate_1 }}</li>
+                            <li class="list-group-item">Unit Rate 2: {{ contract.future_unit_rate_2 }}</li>
+                            <li class="list-group-item">Unit Rate 3: {{ contract.future_unit_rate_3 }}</li>
+                            <li class="list-group-item">Standing Charge: {{ contract.future_standing_charge }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center mb-4">
+            <a href="#" target="_blank" class="btn btn-secondary btn-sm">Download PDF</a>
+        </div>
+    </div>
+{% endblock content %}

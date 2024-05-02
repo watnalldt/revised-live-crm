@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block html_title %}
+    EP | Server Error (500)
+{% endblock html_title %}
+{% block content %}
+    <div class="text-center error" style="margin-top: 50px;">
+        <div class="text-center text-danger error-body">
+            <span class="fa-stack fa-8x">
+                <i class="fas fa-user-tie fa-stack-1x fa-inverse" style="color: #111;"></i>
+            </span>
+            <h2 class="text-danger mt-4 error-txt2">OOPS!!!</h2>
+            <h6 class="text-danger mt-4 error-txt2">
+                {% block reason %}
+                    Our technical team appear to have made an error!!
+                {% endblock reason %}
+            </h6>
+            <hr>
+            <span style="font-weight: bold;">
+                {% block note %}
+                    Note:&nbsp</span>They have been notified of this and are working diligently to rectify it
+                {% endblock note %}
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+        </div>
+    {% endblock content %}

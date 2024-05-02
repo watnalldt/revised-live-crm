@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block metadescription %}
+    <meta name="description"
+          content="Energy Portfolio evolving our services to match the ever changing energy market   ">
+{% endblock metadescription %}
+{% block content %}
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h4 class="text-center">
+                    Energy Portfolio are always looking to evolve our services to ensure we provide value back to our clients.
+                </h4>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-3 mt-4">
+                <img src="{% static 'img/Electricity+Energy+Procurement .jpg' %}"
+                     class="img-fluid"
+                     alt="">
+            </div>
+            <div class="col-md-6 aligned mt-4">
+                <h3>Tenant metering and billing services</h3>
+                <p>
+                    Following a thorough consultation within the Property Management sector, Energy Portfolio have developed a metering and billing solution that ensures this crucial function is delivered as a complete solution.
+                </p>
+                <h5>Our metering and billing solution provides the following:</h5>
+                <ul>
+                    <li>A bespoke system for tenant billing and tariff setting</li>
+                    <li>Reconciliation of usage and utility charges</li>
+                    <li>Data collection via meter reading software</li>
+                    <li>Pre-handover inspections</li>
+                    <li>Input on legalities and lease reviews</li>
+                    <li>Ongoing network management</li>
+                </ul>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-6 aligned mt-4">
+                <h3>Water procurement for managing agents</h3>
+                <p>
+                    Managing agents and our multi-site clients now have the power to switch their business water retailer. As a business, this allows you to compare business water rates and change to a cheaper tariff.
+                </p>
+                <p>
+                    With the business market water open to competition in England and Scotland, businesses in these parts of the UK can take advantage of the more competitive business water prices available.
+                </p>
+                <h5>Benefits of Energy Portfolio’s water procurement services include:</h5>
+                <ul>
+                    <li>Competitive water prices</li>
+                    <li>We ensure smooth transition of transfer of supply</li>
+                    <li>Supplier choice based on your business requirements</li>
+                    <li>Independent and impartial advice</li>
+                    <li>Improved invoicing and commercial arrangements with the new water provider</li>
+                    <li>Ongoing support</li>
+                </ul>
+            </div>
+            <div class="col-md-3 mt-4">
+                <img src="{% static 'img/Water+Procurement+Services.jpg' %}"
+                     class="img-fluid"
+                     alt="">
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-12  mt-4 mb-4">
+                    <h4 class="align-center">Choosing the most beneficial supplier for your business</h4>
+                    <p class="align-center">
+                        Once we understand your current position, we approach the marketplace to ‘price’ your new contract.
+                    </p>
+                    <p class="align-center">
+                        We’ll provide you with a summary of shortlisted suppliers, ranked in order depending on their quotation and customer service levels.
+                    </p>
+                    <p>
+                        Once you are confident your business has chosen the most beneficial supplier, we will manage the switching process to ensure all your supply is migrated to your new provider.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

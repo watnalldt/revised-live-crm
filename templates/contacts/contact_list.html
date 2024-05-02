@@ -1,0 +1,35 @@
+{% extends "dashboards/staff_portal_base.html" %}
+{% block content %}
+    <div class="container mt-4 mb-4 font-size-14">
+        <div class="d-flex justify-content-center align-items-center mb-4">
+            <a href="{% url 'contacts:create_contact' %}"
+               class="btn btn-primary"
+               role="button">Add New Contact</a>
+        </div>
+        <h2 class="text-center fs-6 analytics-highlight">Client Contacts</h2>
+        <table id="contact_list" class="nowrap" style="width:100%;">
+            <thead>
+                <tr>
+                    <th scope="col">Client</th>
+                    <th scope="col">Contact Name</th>
+                    <th scope="col">Title</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Edit/Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contact in contacts %}
+                    <tr>
+                        <td>{{ contact.client }}</td>
+                        <td>{{ contact.name }}</td>
+                        <td>{{ contact.job_title }}</td>
+                        <td>{{ contact.email }}</td>
+                        <td>
+                            <a href="{% url 'contacts:update_contact' contact.id %}"><i class="fa-solid fa-pencil" style="font-size: 25px; color:green;"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

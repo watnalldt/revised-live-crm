@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block metadescription %}
+    <meta name="description"
+          content="We believe working with dedicated sector partners is crucial to our success. It improves our propositions for the sector">
+{% endblock metadescription %}
+{% block content %}
+    <br>
+    <p class="intro align-center mb-4">
+        <strong>
+            We believe working with dedicated sector partners is crucial to our success. It improves our propositions for the sector but also helps us understand the challenges you face.
+            <br>
+            It is our business to understand the world of Property Management, and we are working with leading industry partners.
+        </strong>
+    </p>
+    <div class="container mt-4">
+        <section class="our-partners">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-3" style="padding-left: 0;  padding-right: 0;">
+                    <img src="{% static 'img/IRMP+Annual+Seminar+2019.png' %}"
+                         class="img-fluid"
+                         alt="IRMP Annual Seminar 2019">
+                </div>
+                <div class="col-md-6 aligned mt-4">
+                    <p>
+                        Since 2016 Energy Portfolio have sponsored The Institute of Residential Property Management (IRPM) regional events. IRPM is the leading professional body for residential property management professionals, providing learning and qualifications to over 4,900 members from over 1,200 organisations, who serve the private, social, build-to-rent and retirement sectors, managing estates and developments across all tenures.
+                    </p>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-6 aligned mt-4">
+                    <p>
+                        We have proudly been a partner of ARMA since 2015.  We are an advocate the that the sector promotes transparency. ARMA is the leading professional body for residential managing agents in England & Wales. They promote high standards of leasehold management and professionalism through advice, training and guidance.
+                    </p>
+                </div>
+                <div class="col-md-3" style="padding-left: 0;  padding-right: 0;">
+                    <img src="{% static 'img/arma-partner-logo.png' %}"
+                         class="img-fluid"
+                         alt="IRMP Annual Seminar 2019">
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-3">
+                    <img src="{% static 'img/Dwellant+Building+Intelligence.png' %}"
+                         class="img-fluid"
+                         alt="IRMP Annual Seminar 2019">
+                </div>
+                <div class="col-md-6 aligned mt-4">
+                    <p>
+                        Since 2016 Energy Portfolio have sponsored The Institute of Residential Property Management (IRPM) regional events. IRPM is the leading professional body for residential property management professionals, providing learning and qualifications to over 4,900 members from over 1,200 organisations, who serve the private, social, build-to-rent and retirement sectors, managing estates and developments across all tenures.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+    <section class="mb-4">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8">
+                <img src="{% static 'img/our-energy-partners.png' %}"
+                     class="img-fluid"
+                     alt="energy portfolio partner list">
+            </div>
+        </div>
+    </section>
+{% endblock content %}

@@ -1,0 +1,65 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark"
+     style="background-color: #000000">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'img/energy-portfolio-logo.png' %}"
+                 alt=""
+                 width="270"
+                 height="auto" />
+        </a>
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="{% url 'pages:home' %}"><i class="fa-solid fa-house"></i>&nbsp;Home</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"
+                       href="#"
+                       id="navbarDropdown"
+                       role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="fa-solid fa-list"></i>&nbsp;About Us
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'pages:our_services' %}">Our Services</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'pages:seamless_utilities' %}">Seamless Utilities</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'pages:partners' %}">Our Partners</a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"  href="{% url 'pages:market_update' %}"><i class="fa-solid fa-file"></i>&nbsp;Market Information</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pages:contact_us' %}"><i class="fa-solid fa-paper-plane"></i>&nbsp;Contact Us</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'pages:meter_reading_submission' %}"><i class="fa-solid fa-file-waveform"></i>&nbsp;Submit Meter Reading</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:login' %}"><i class="fa-solid fa-lock"></i>&nbsp;Login</a>
+                </li>
+                <!-- Client Registration -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:client_manager_registration' %}"><i class="fa-solid fa-lock"></i>&nbsp;Client Registration</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

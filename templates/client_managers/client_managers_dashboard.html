@@ -1,0 +1,56 @@
+{% extends "dashboards/client_portal_base.html" %}
+{% block html_title %}
+    {{ html_title }}
+{% endblock html_title %}
+{% block content %}
+    <div class="container">
+        <div class="d-flex flex-row">
+            <div class="infocell mb-4">
+                <h6 class="text-center">
+                    <strong>Contracts DashBoard</strong>
+                </h6>
+                <hr>
+                <p>You are logged in as {{ user.email }}</p>
+                <p>Your last login was {{ user.last_login }}</p>
+            </div>
+        </div>
+        <table id="cm_list" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Client</th>
+                    <th>Business Name</th>
+                    <th>MPAN/MPR</th>
+                    <th>Meter Serial Number</th>
+                    <th>EAC</th>
+                    <th>Contract End Date</th>
+                    <th>View</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contract in contract_list %}
+                    <tr>
+                        <td>{{ contract.client }}</td>
+                        <td>{{ contract.business_name }}</td>
+                        <td>{{ contract.mpan_mpr }}</td>
+                        <td>{{ contract.meter_serial_number }}</td>
+                        <td>{{ contract.eac }}</td>
+                        <td>{{ contract.contract_end_date }}</td>
+                        <td>
+                            <a href="{% url 'contracts:client_contract_detail' contract.pk %}"
+                               class="btn btn-success text-center"><i class="fa-solid fa-eye"></i></a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+    </div>
+{% endblock content %}
+{% block extra_js %}
+    <script>
+    $(document).ready(function () {
+      $('#cm_list').DataTable();
+    });
+
+    </script>
+{% endblock extra_js %}

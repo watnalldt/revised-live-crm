@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block html_title %}
+    EP | Page not found (404)
+{% endblock html_title %}
+{% block content %}
+    <div class="text-center error">
+        <div class="text-center text-danger error-body">
+            {% block error-body %}
+                <span class="text-danger mb-5 error-404">404</span>
+                <h4 class="text-danger mb-3">THE PAGE YOU HAVE ENTERED IS NOT AVAILABLE</h4>
+                <p>Sorry, the page you were looking for could not be found</p>
+            </div>
+        </div>
+    {% endblock error-body %}
+{% endblock content %}

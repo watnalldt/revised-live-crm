@@ -1,0 +1,35 @@
+[tool.black]
+line-length = 100
+target-version = ['py311']
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 100
+default_section = "THIRDPARTY"
+known_first_party = []
+known_third_party = ["admin_auto_filters", "django", "django_recaptcha", "environ", "import_export", "openpyxl", "rangefilter", "sentry_sdk", "simple_history", "tablib"]
+
+[tool.djlint]
+profile="django"
+ignore = "H031,H006,H030,H021,H023"
+
+# ==== mypy ====
+[tool.mypy]
+python_version = "3.11"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+plugins = [
+    "mypy_django_plugin.main",
+]
+
+[[tool.mypy.overrides]]
+# Django migrations should not produce any errors:
+module = "*.migrations.*"
+ignore_errors = true
+
+[tool.django-stubs]
+django_settings_module = "config.testing_settings"

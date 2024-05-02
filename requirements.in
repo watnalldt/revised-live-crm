@@ -1,0 +1,64 @@
+Django<5.0
+django-environ
+django-extensions
+Werkzeug
+sentry-sdk
+pyOpenSSL
+
+# forms
+django-crispy-forms
+crispy-bootstrap5
+django-widget-tweaks
+django-recaptcha
+django-select2
+# static file management
+whitenoise
+
+# management and admin
+dj_user_login_history
+django-user-visit
+django-import-export
+django-simple-history
+django-auto-logout
+django-grappelli
+django-admin-rangefilter
+django-admin-autocomplete-filter
+django-admin-logs
+djangoql
+openpyxl
+dj-database-url
+
+# Email
+django-mailjet
+
+# Login Restriction
+django-axes
+
+# development
+django-debug-toolbar
+django-browser-reload
+
+# Database
+psycopg[binary]
+
+#Server
+gunicorn==21.0.1
+
+# Rest Framework
+djangorestframework
+markdown       # Markdown support for the browsable API.
+django-filter  #
+
+# Testing
+pytest-django
+pytest-sugar
+coverage
+mixer
+pytest-mock
+ruff
+black
+pydotplus
+
+pandas
+matplotlib
+xlsxwriter
