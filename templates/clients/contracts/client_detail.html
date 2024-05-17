@@ -17,6 +17,7 @@
                             <tr>
                                 <th scope="col">Type</th>
                                 <th scope="col">Status</th>
+                                <th>Client Group</th>
                                 <th scope="col">Business Name</th>
                                 <th scope="col">Site Address</th>
                                 <th scope="col">Supplier</th>
@@ -49,6 +50,7 @@
                                         <td>{% trans "S" %}</td>
                                     {% endif %}
                                     <td>{{ contract.contract_status }}</td>
+                                    <td>{{ contract.client_group }}</td>
                                     <td>{{ contract.business_name | title }}</td>
                                     <td>{{ contract.site_address }}</td>
                                     <td>{{ contract.supplier }}</td>

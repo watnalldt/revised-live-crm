@@ -1,32 +1,9 @@
 {% extends "dashboards/staff_portal_base.html" %}
 {% load static %}
-{% load excel_tags %}
 {% load i18n %}
-{% block extra_head %}
-    <style>
-#search_list {
-    display: none;
-}
-
-/* Fade-in animation for table body */
-.fade-in {
-    animation: fadeInAnimation ease 1s;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-}
-
-@keyframes fadeInAnimation {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-    </style>
-{% endblock extra_head %}
+{% load excel_tags %}
 {% block content %}
-    <div class="container mt-4 mb-4 font-size-14">
+   <div class="container mt-4 mb-4 font-size-12">
         <h2 class="text-center fs-6 analytics-highlight">Search Results</h2>
         <table id="search_list" class="nowrap" style="width:100%;">
             <thead>
@@ -34,6 +11,7 @@
                     <th scope="col">Type</th>
                     <th scope="col">Status</th>
                     <th scope="col">Client</th>
+                  <th scope="col">Client Group</th>
                     <th scope="col">Business Name</th>
                     <th scope="col">Site Address</th>
                     <th scope="col">Supplier</th>
@@ -66,6 +44,7 @@
                         {% endif %}
                         <td>{{ contract.contract_status }}</td>
                         <td>{{ contract.client }}</td>
+                        <td>{{ contract.client_group }}</td>
                         <td>{{ contract.business_name }}</td>
                         <td>{{ contract.site_address }}</td>
                         <td>{{ contract.supplier }}</td>
@@ -103,6 +82,7 @@
             </tbody>
         </table>
     </div>
+
 {% endblock content %}
 {% block extra_js %}
     <script>
@@ -122,7 +102,6 @@ $(document).ready(function() {
           "exportOptions": {
             "modifier": {
               "selected": true // Export only selected rows
-              "columns": ':visible'
             }
           },
           "customize": function (xlsx) {
@@ -148,7 +127,6 @@ $(document).ready(function() {
           "exportOptions": {
             "modifier": {
               "selected": null // Export all rows
-
             }
           },
           "customize": function (xlsx) {
@@ -182,3 +160,5 @@ $(document).ready(function() {
     </script>
     <script src="{% static 'js/fade.js' %}"></script>
 {% endblock extra_js %}
+
+  

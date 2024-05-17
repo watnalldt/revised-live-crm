@@ -273,12 +273,8 @@ class SearchView(LoginRequiredMixin, AccountManagerRequiredMixin, View):
             | Q(business_name__icontains=query)
             | Q(site_address__icontains=query)
             | Q(client__client__icontains=query)
+            | Q(client_group__iexact=query)
         )  # Search
-
-        # # Pagination
-        # paginator = Paginator(contracts, 10)  # Show 10 clients per page
-        # page_number = request.GET.get("page")
-        # page_obj = paginator.get_page(page_number)
 
         return render(
             request,
