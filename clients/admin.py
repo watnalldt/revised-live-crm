@@ -20,6 +20,7 @@ class ElectricityCommissionResource(resources.ModelResource):
     class Meta:
         model = ElectricityCommission
 
+
 class ElectricityCommissionInline(admin.TabularInline):
     model = ElectricityCommission
     extra = 1
@@ -36,7 +37,9 @@ class ClientResource(resources.ModelResource):
         attribute="account_manager",
         widget=ForeignKeyWidget(User, "email"),
     )
-    client__electricity_commission = Field(attribute='electricity_commission', column_name='Electricity Commission')
+    client__electricity_commission = Field(
+        attribute="electricity_commission", column_name="Electricity Commission"
+    )
 
     class Meta:
         model = Client

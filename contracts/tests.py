@@ -48,5 +48,3 @@ class ContractsManagerTestCase(TestCase):
         self.assertEqual(contract_with_related.utility, self.utility)
         self.assertEqual(contract_with_related.mpan_mpr, "1234567890123")
         self.assertEqual(contract_with_related.business_name, "The White House")
-
-

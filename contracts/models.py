@@ -81,8 +81,6 @@ class ContractTypeQuerySet(models.QuerySet):
         )
 
 
-
-
 class Contract(models.Model):
     class BaseYesNo(models.TextChoices):
         YES = "YES", _("Yes")

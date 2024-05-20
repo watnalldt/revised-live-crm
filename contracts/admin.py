@@ -207,8 +207,8 @@ class StartDateIsNullFilter(admin.SimpleListFilter):
 
 
 class MultiStatusFilter(admin.SimpleListFilter):
-    title = _('Contract Status')  # Human-readable title which will be displayed
-    parameter_name = 'contract_status'  # URL parameter name for filtering
+    title = _("Contract Status")  # Human-readable title which will be displayed
+    parameter_name = "contract_status"  # URL parameter name for filtering
 
     def lookups(self, request, model_admin):
         """
@@ -225,14 +225,14 @@ class MultiStatusFilter(admin.SimpleListFilter):
         """
         if self.value():
             # Splitting the values on commas allows for multiple statuses to be filtered
-            filter_values = self.value().split(',')
+            filter_values = self.value().split(",")
             return queryset.filter(contract_status__in=filter_values)
         return queryset
 
 
 class AccountManagerFilter(admin.SimpleListFilter):
-    title = 'Account Manager'
-    parameter_name = 'account_manager'
+    title = "Account Manager"
+    parameter_name = "account_manager"
 
     def lookups(self, request, model_admin):
         # Return a list of tuples (value, verbose_name) for the filter options
@@ -440,8 +440,8 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         use_distinct = False
 
         # Check if the search_term involves potential multiple MPAN numbers
-        if ',' in search_term:
-            mpan_terms = [term.strip() for term in search_term.split(',') if term.strip()]
+        if "," in search_term:
+            mpan_terms = [term.strip() for term in search_term.split(",") if term.strip()]
             if mpan_terms:
                 q_objects = Q(mpan_mpr__iexact=mpan_terms[0])  # Start with the first term
                 for term in mpan_terms[1:]:
@@ -551,7 +551,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     def bulk_quote_template(self, request, queryset):
         # Check if the user has the required permission
-        if not request.user.has_perm('contracts.can_access_bulk_quote_template'):
+        if not request.user.has_perm("contracts.can_access_bulk_quote_template"):
             messages.error(request, "You do not have permission to use the bulk upload template.")
             # If the user does not have permission, return a HTTP Forbidden response or any other appropriate action
             return HttpResponseRedirect(reverse("admin:index"))
@@ -611,10 +611,10 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     def export_commissions_to_excel(self, request, queryset):
         # Check if the user has the 'can_export_commissions' permission
-        if not request.user.has_perm('contracts.can_export_commissions'):
+        if not request.user.has_perm("contracts.can_export_commissions"):
             # If the user does not have the permission, display a message and redirect
             messages.error(request, "You do not have permission to export commissions.")
-            return HttpResponseRedirect(reverse('admin:index'))
+            return HttpResponseRedirect(reverse("admin:index"))
         response = HttpResponse(
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
@@ -647,7 +647,6 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "contract_type",
                 "client__originator",
                 "client__client_onboarded",
-
                 "utility__utility",  # Assuming 'utility' field is a ForeignKey to a Utility model
                 "commission_per_unit",
                 "commission_per_annum",
@@ -774,10 +773,12 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     def export_combined_report(self, request, queryset):
         # Filter out contracts with statuses 'Lost' or 'Removed'
-        queryset = queryset.exclude(contract_status__in=['LOST', 'REMOVED'])
+        queryset = queryset.exclude(contract_status__in=["LOST", "REMOVED"])
 
         # Set up the response for Excel file
-        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response = HttpResponse(
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         response["Content-Disposition"] = 'attachment; filename="All_Reports.xlsx"'
 
         # Use ExcelWriter to write multiple sheets
@@ -785,8 +786,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             # Process and export "Contracts By Status"
             df_status = pd.DataFrame.from_records(
                 queryset.annotate(
-                    count=Count("id"),
-                    client_contract_status=F("contract_status")
+                    count=Count("id"), client_contract_status=F("contract_status")
                 ).values("client_contract_status", "count")
             )
             pivot_table_status = df_status.pivot_table(
@@ -794,7 +794,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 index=["client_contract_status"],
                 aggfunc="sum",
                 margins=True,
-                margins_name="Total"
+                margins_name="Total",
             )
             pivot_table_status.to_excel(writer, sheet_name="Contract Status Count")
 
@@ -803,23 +803,27 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             worksheet.auto_filter.ref = "A:A"  # Apply auto filter on all columns
 
             # Process and export "DA Approval Status"
-            df_approval = pd.DataFrame.from_records(queryset.values('is_directors_approval'))
-            total_yes = (df_approval['is_directors_approval'] == 'YES').sum()
-            total_no = (df_approval['is_directors_approval'] == 'NO').sum()
-            approval_df = pd.DataFrame({
-                'Approval Status': ['YES', 'NO', 'Total'],
-                'Total': [total_yes, total_no, total_yes + total_no]
-            })
+            df_approval = pd.DataFrame.from_records(queryset.values("is_directors_approval"))
+            total_yes = (df_approval["is_directors_approval"] == "YES").sum()
+            total_no = (df_approval["is_directors_approval"] == "NO").sum()
+            approval_df = pd.DataFrame(
+                {
+                    "Approval Status": ["YES", "NO", "Total"],
+                    "Total": [total_yes, total_no, total_yes + total_no],
+                }
+            )
             approval_df.to_excel(writer, index=False, sheet_name="DA Approval Status")
 
             # Process and export "OOC Status Counts"
-            df_ooc = pd.DataFrame.from_records(queryset.values('is_ooc'))
-            total_yes = (df_ooc['is_ooc'] == 'YES').sum()
-            total_no = (df_ooc['is_ooc'] == 'NO').sum()
-            ooc_df = pd.DataFrame({
-                'OOC Status': ['YES', 'NO', 'Total'],
-                'Total': [total_yes, total_no, total_yes + total_no]
-            })
+            df_ooc = pd.DataFrame.from_records(queryset.values("is_ooc"))
+            total_yes = (df_ooc["is_ooc"] == "YES").sum()
+            total_no = (df_ooc["is_ooc"] == "NO").sum()
+            ooc_df = pd.DataFrame(
+                {
+                    "OOC Status": ["YES", "NO", "Total"],
+                    "Total": [total_yes, total_no, total_yes + total_no],
+                }
+            )
             ooc_df.to_excel(writer, index=False, sheet_name="OOC Status Count")
 
         return response
