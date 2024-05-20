@@ -1,3 +1,4 @@
+import pytest
 from django.test import TestCase
 from contracts.models import Contract, ContractsManager
 from clients.models import Client
@@ -43,8 +44,9 @@ class ContractsManagerTestCase(TestCase):
 
             # Assert that the objects are correctly related
         self.assertEqual(contract_with_related.client, self.client)
-        # self.assertEqual(contract_with_related.account_manager, self.account_manager)
         self.assertEqual(contract_with_related.supplier, self.supplier)
         self.assertEqual(contract_with_related.utility, self.utility)
         self.assertEqual(contract_with_related.mpan_mpr, "1234567890123")
         self.assertEqual(contract_with_related.business_name, "The White House")
+
+

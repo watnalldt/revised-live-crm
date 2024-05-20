@@ -42,6 +42,7 @@ class Client(TimeStampedModel):
     originator = models.CharField(max_length=250, null=True, blank=True, verbose_name="Originator")
     client_onboarded = models.DateField(null=True, blank=True, verbose_name="Client Onboarded")
     loa = models.DateField(verbose_name="Letter of Authority", null=True, blank=True)
+    contract_term = models.CharField(max_length=250, null=True, blank=True, verbose_name="Contract Term")
     is_lost = models.BooleanField(
         default=False,
         verbose_name="Lost Client",

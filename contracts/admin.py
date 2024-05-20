@@ -111,7 +111,6 @@ class ContractResource(resources.ModelResource):
             "contract_end_date",
             "lock_in_date",
             "supplier_start_date",
-            "contract_term",
             "account_number",
             "eac",
             "day_consumption",
@@ -326,7 +325,6 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                         "contract_end_date",
                         "supplier_start_date",
                         "lock_in_date",
-                        "contract_term",
                     ),
                     "is_ooc",
                 ),
@@ -562,6 +560,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         fields_to_export = [
             "id",
             "client",
+            "contract_term",
             "billing_address",
             "company_reg_number",
             "business_name",
@@ -571,12 +570,12 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             "supplier",
             "contract_type",
             "contract_status",
-            "contract_term",
             "contract_end_date",
             "eac",
             "is_directors_approval",
             "commission_per_annum",
             "commission_per_unit",
+            "vat_rate",
         ]
         data = tablib.Dataset()
         data.headers = fields_to_export

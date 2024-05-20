@@ -25,67 +25,6 @@ class ContractsManager(models.Manager):
         )
 
 
-# class ConsumptionManager(models.Manager):
-#     def get_queryset(self):
-#         # Adjusted to include 'contract' in select_related for optimization
-#         return (
-#             super()
-#             .get_queryset()
-#             .select_related("client", "client_manager", "supplier", "utility", "contract")
-#         )
-#
-#     def top_clients_by_eac(self):
-#         # Aggregate the EAC for each client through their contracts
-#         return (
-#             self.get_queryset()
-#             .values("client__client")
-#             .annotate(
-#                 total_eac=models.Sum("eac")
-#                 # 'eac' field is in the Contract model, and it's related to 'Consumption' model
-#             )
-#             .order_by("-total_eac")[:30]
-#         )
-
-
-# class ElectricityCommissionManager(models.Manager):
-#     def top_clients_by_total_value(self):
-#         # Filter out where eac or commission_per_unit is None using Q objects for negation
-#         queryset = (
-#             self.get_queryset()
-#             .exclude(Q(eac=None) | Q(commission_per_unit=None))
-#             .filter(utility__utility="Electricity")
-#         )
-#
-#         """  Annotate each client with total value of their contracts
-#         and return top 50 ordered by total value """
-#         return (
-#             queryset.values("client__client")
-#             .annotate(total_value=Sum("eac") * F("commission_per_unit"))
-#             .order_by("-total_value")
-#         )
-#
-#
-# class GasCommissionManager(models.Manager):
-#     def top_clients_by_total_value(self):
-#         # Filter out where eac or commission_per_unit is None using Q objects for negation
-#         queryset = (
-#             self.get_queryset()
-#             .exclude(Q(eac=None) | Q(commission_per_unit=None))
-#             .filter(
-#                 utility__utility="Gas"  # Assuming 'contract' is the FK to Contract model and 'utility' is the field name
-#             )
-#         )
-#
-#         """  Annotate each client with total value of their contracts
-#         and return top 50 ordered by total value """
-#         return (
-#             queryset.values("client__client")
-#             .annotate(total_value=Sum("eac") * F("commission_per_unit"))
-#             .order_by("-total_value")
-#         )
-#
-
-
 class UtilityQuerySet(models.QuerySet):
     def gas(self):
         """
@@ -140,6 +79,8 @@ class ContractTypeQuerySet(models.QuerySet):
         return self.filter(contract_type="NON_SEAMLESS").select_related(
             "client", "supplier", "utility"
         )
+
+
 
 
 class Contract(models.Model):
@@ -261,7 +202,6 @@ class Contract(models.Model):
     supplier_start_date = models.DateField(
         verbose_name="Supplier Start Date", null=True, blank=True
     )
-    contract_term = models.CharField(max_length=150, null=True, blank=True)
     account_number = models.CharField(
         verbose_name="Account Number", max_length=100, null=True, blank=True
     )
@@ -445,9 +385,6 @@ class Contract(models.Model):
     objects = ContractsManager()  # Default Manager
     utilities = UtilityQuerySet.as_manager()  # Manager returns contracts per utility
     contracts = ContractTypeQuerySet.as_manager()
-    # consumption = ConsumptionManager()
-    # electricity_commissions = ElectricityCommissionManager()
-    # gas_commissions = GasCommissionManager()
 
     class Meta:
         indexes = [
@@ -496,23 +433,6 @@ class Contract(models.Model):
                 self.commission_per_annum = commission.commission_per_annum
                 self.commission_per_unit = commission.commission_per_unit
 
-    # def validate_vat_declaration(self):
-    #     """Validate VAT declaration and set appropriate values."""
-    #     if self.vat_declaration_sent == self.BaseYesNo.YES:
-    #         if self.vat_declaration_date is None:
-    #             raise ValidationError(
-    #                 "Error: vat_declaration_date cannot be null when vat_declaration_sent is YES."
-    #             )
-    #         self.vat_declaration_expires = self.contract_end_date
-    #     else:
-    #         self.vat_declaration_expires = None
-    #
-    #     if self.vat_rate not in [
-    #         self.VatRate.FIVE_PERCENT,
-    #         self.VatRate.TWENTY_PERCENT,
-    #         self.VatRate.UNKNOWN,
-    #     ]:
-    #         raise ValidationError("Invalid VAT rate")
     def validate_vat_declaration(self):
         """Validate VAT declaration and set appropriate values."""
         if self.vat_declaration_sent == self.BaseYesNo.YES:
@@ -545,3 +465,8 @@ class Contract(models.Model):
         today = date.today()
         days_till = self.contract_end_date - today
         return str(days_till).split(",", 1)[0]
+
+    # Contract Term used in bulk upload template
+    @property
+    def contract_term(self):
+        return self.client.contract_term

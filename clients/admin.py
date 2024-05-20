@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from import_export import fields, resources
 from import_export.admin import ImportExportModelAdmin
+from import_export.fields import Field
 from import_export.widgets import ForeignKeyWidget
 
 from .models import Client
@@ -14,6 +15,10 @@ from commissions.models import ElectricityCommission, GasCommission
 
 User = get_user_model()
 
+
+class ElectricityCommissionResource(resources.ModelResource):
+    class Meta:
+        model = ElectricityCommission
 
 class ElectricityCommissionInline(admin.TabularInline):
     model = ElectricityCommission
@@ -31,6 +36,7 @@ class ClientResource(resources.ModelResource):
         attribute="account_manager",
         widget=ForeignKeyWidget(User, "email"),
     )
+    client__electricity_commission = Field(attribute='electricity_commission', column_name='Electricity Commission')
 
     class Meta:
         model = Client
@@ -40,6 +46,7 @@ class ClientResource(resources.ModelResource):
             "id",
             "client",
             "account_manager",
+            "contract_term",
             "originator",
             "client_onboarded",
             "loa",
@@ -51,10 +58,12 @@ class ClientResource(resources.ModelResource):
             "id",
             "client",
             "account_manager",
+            "contract_term",
             "originator",
             "client_onboarded",
             "loa",
             "is_lost",
+            "client__electricity_commission",
         ]
 
 
@@ -65,6 +74,7 @@ class ClientAdmin(ImportExportModelAdmin):
     list_display = (
         "id",
         "client",
+        "contract_term",
         "originator",
         "client_onboarded",
         "is_lost",
