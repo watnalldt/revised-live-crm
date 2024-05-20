@@ -1,4 +1,3 @@
-import pytest
 from django.test import TestCase
 from contracts.models import Contract, ContractsManager
 from clients.models import Client
