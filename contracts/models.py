@@ -109,6 +109,7 @@ class Contract(models.Model):
         AWAITING_DA = "AWAITING_DA", _("Awaiting DA")
         DUPLICATE = "DUPLICATE", _("Duplicate")
         IN_SUPPLIER_BACKLOG = "IN_SUPPLIER_BACKLOG", _("In Supplier Backlog")
+        DATA_CLEANSE = "DATA_CLEANSE", _("Data Cleanse")
 
     class MeterStatus(models.TextChoices):
         """The default is set to Active"""

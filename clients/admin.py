@@ -37,7 +37,7 @@ class ClientResource(resources.ModelResource):
         attribute="account_manager",
         widget=ForeignKeyWidget(User, "email"),
     )
-    client__electricity_commission = Field(
+    client__electricity_commission =                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Field(
         attribute="electricity_commission", column_name="Electricity Commission"
     )
 
