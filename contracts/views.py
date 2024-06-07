@@ -1,10 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
-from django.views.generic import DetailView, CreateView, UpdateView
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views.generic import DetailView, UpdateView
 from contracts.forms import ContractNotesForm
 from contracts.models import Contract
 from core.decorators import client_manager_required

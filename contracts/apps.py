@@ -6,4 +6,4 @@ class ContractsConfig(AppConfig):
     name = "contracts"
 
     def ready(self):
-        import contracts.signals
+        pass
