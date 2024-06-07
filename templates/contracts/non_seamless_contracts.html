@@ -109,24 +109,15 @@
             <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                 <div class="card shadow">
                     <div class="card-header custom-header">
-                        <h2 class="fs-6 card-title text-center mt-2">Future Contract Rates</h2>
+                        <h2 class="fs-6 card-title text-center mt-2">Notes</h2>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Start Date: {{ contract.future_contract_start_date }}</li>
-                            <li class="list-group-item">End Date: {{ contract.future_contract_end_date }}</li>
-                            <li class="list-group-item">Unit Rate 1: {{ contract.future_unit_rate_1 }}</li>
-                            <li class="list-group-item">Unit Rate 2: {{ contract.future_unit_rate_2 }}</li>
-                            <li class="list-group-item">Unit Rate 3: {{ contract.future_unit_rate_3 }}</li>
-                            <li class="list-group-item">Standing Charge: {{ contract.future_standing_charge }}</li>
-                        </ul>
+                        <p>{{ contract.notes }}</p>
                     </div>
                 </div>
             </div>
         </div>
-        <hr>
-        <div class="text-center mb-4">
-            <a href="#" target="_blank" class="btn btn-secondary btn-sm">Download PDF</a>
-        </div>
+
+
     </div>
 {% endblock content %}

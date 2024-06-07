@@ -1,7 +1,8 @@
 from django import forms
-from .models import Contract, Client
+from .models import Contract
 
 
-class ContractFilterForm(forms.Form):
-    client = forms.ModelChoiceField(queryset=Client.objects.all(), required=False)
-    contract_status = forms.ChoiceField(choices=Contract.ContractStatus.choices, required=False)
+class ContractNotesForm(forms.ModelForm):
+    class Meta:
+        model = Contract
+        fields = ["notes"]

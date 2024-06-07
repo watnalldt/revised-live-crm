@@ -37,9 +37,6 @@ class ClientResource(resources.ModelResource):
         attribute="account_manager",
         widget=ForeignKeyWidget(User, "email"),
     )
-    client__electricity_commission =                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Field(
-        attribute="electricity_commission", column_name="Electricity Commission"
-    )
 
     class Meta:
         model = Client
@@ -57,7 +54,7 @@ class ClientResource(resources.ModelResource):
         ]
         import_id_fields = ["id"]
 
-        export_order = [
+        export_order = (
             "id",
             "client",
             "account_manager",
@@ -66,8 +63,7 @@ class ClientResource(resources.ModelResource):
             "client_onboarded",
             "loa",
             "is_lost",
-            "client__electricity_commission",
-        ]
+        )
 
 
 class ClientAdmin(ImportExportModelAdmin):

@@ -59,6 +59,7 @@ class ClientListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = Client
     context_object_name = "all_clients"
     template_name = "clients/contracts/all_contracts/all_clients.html"
+    login_url = "/users/login/"
 
     def test_func(self):
         return self.request.user.groups.filter(name="Account Managers").exists()
@@ -67,6 +68,7 @@ class ClientListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 class AllClientsView(LoginRequiredMixin, UserPassesTestMixin, HTMLTitleMixin, DetailView):
     queryset = Client.objects.all()
     template_name = "clients/contracts/all_contracts/all_client_contracts.html"
+    login_url = "/users/login/"
 
     def get_html_title(self):
         return self.object.client
@@ -78,6 +80,7 @@ class AllClientsView(LoginRequiredMixin, UserPassesTestMixin, HTMLTitleMixin, De
 class AllContractsDetailView(LoginRequiredMixin, UserPassesTestMixin, HTMLTitleMixin, DetailView):
     model = Contract
     template_name = "clients/contracts/all_contracts/all_contracts_detail.html"
+    login_url = "/users/login/"
 
     def get_html_title(self):
         return self.object.business_name

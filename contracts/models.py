@@ -193,6 +193,9 @@ class Contract(models.Model):
         related_name="contract_suppliers",
     )
     supplier_coding = models.CharField(max_length=50, null=True, blank=True)
+    previous_supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, null=True, blank=True,
+                                          related_name='previous_contracts')
+    supplier_changed_date = models.DateField(null=True, blank=True)
     contract_start_date = models.DateField(
         verbose_name="Contract Start Date", null=True, blank=True
     )
@@ -450,7 +453,17 @@ class Contract(models.Model):
         ]:
             raise ValidationError("Invalid VAT rate")
 
+    # def check_supplier_change(self):
+    #     """Check if the supplier has changed and update previous_supplier if necessary."""
+    #     if self.pk:  # Check if this is not a new instance
+    #         old_contract = Contract.objects.get(pk=self.pk)
+    #         if old_contract.supplier != self.supplier:
+    #             # Check if the supplier_changed_date is filled
+    #             if self.supplier_changed_date:
+    #                 self.previous_supplier = old_contract.supplier
+
     def save(self, *args, **kwargs):
+        # self.check_supplier_change()  # Check supplier change before saving
         self.calculate_commission()  # Calculate commission before saving
         self.validate_vat_declaration()  # Validate VAT declaration
 

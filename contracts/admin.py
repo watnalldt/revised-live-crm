@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from import_export import fields, resources
-from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportModelAdmin, ExportActionMixin
 from import_export.widgets import ForeignKeyWidget
 from rangefilter.filters import DateRangeFilter
 
@@ -20,12 +20,12 @@ from django.contrib import messages
 
 from clients.models import Client
 from utilities.models import Supplier, Utility
-from users.models import AccountManager
 from io import BytesIO
 from openpyxl import Workbook
 from openpyxl.styles import Font
 import pandas as pd
 from .models import Contract
+from users.models import AccountManager
 
 User = get_user_model()
 
@@ -50,9 +50,9 @@ class UtilityTypeFilter(AutocompleteFilter):
     field_name = "utility"  # name of the foreign key field
 
 
-# class FutureSupplierFilter(AutocompleteFilter):
-#     title = "Future Supplier"  # display title
-#     field_name = "future_supplier"  # name of the foreign key field
+class PreviousSupplierFilter(AutocompleteFilter):
+    title = "Previous Supplier"  # display title
+    field_name = "previous_supplier"  # name of the foreign key field
 
 
 class ContractResource(resources.ModelResource):
@@ -71,25 +71,19 @@ class ContractResource(resources.ModelResource):
         column_name="utility", attribute="utility", widget=ForeignKeyWidget(Utility, "utility")
     )
 
-    # future_supplier = fields.Field(
-    #     column_name="future_supplier",
-    #     attribute="future_supplier",
-    #     widget=ForeignKeyWidget(Supplier, "supplier"),
-    # )
+    previous_supplier = fields.Field(
+        column_name="previous_supplier", attribute="previous_supplier", widget=ForeignKeyWidget(Supplier, "supplier")
+    )
 
     class Meta:
         model = Contract
-
         report_skipped = True
         import_id_fields = ("id",)
-        export_order = [
+        export_order = (
             "id",
             "contract_type",
             "seamless_updated",
             "contract_status",
-            # "dwellent_id",
-            # "bid_id",
-            # "portal_status",
             "client",
             "client_group",
             "client_manager",
@@ -107,6 +101,8 @@ class ContractResource(resources.ModelResource):
             "billing_address",
             "supplier",
             "supplier_coding",
+            "previous_supplier",
+            "supplier_changed_date",
             "contract_start_date",
             "contract_end_date",
             "lock_in_date",
@@ -140,16 +136,8 @@ class ContractResource(resources.ModelResource):
             "vat_declaration_date",
             "vat_declaration_expires",
             "notes",
-            "kva",
-            # "future_supplier",
-            # "future_contract_start_date",
-            # "future_contract_end_date",
-            # "future_unit_rate_1",
-            # "future_unit_rate_2",
-            # "future_unit_rate_3",
-            # "future_standing_charge",
-        ]
-
+            "kva"
+    )
 
 # Custom Filters
 
@@ -207,8 +195,8 @@ class StartDateIsNullFilter(admin.SimpleListFilter):
 
 
 class MultiStatusFilter(admin.SimpleListFilter):
-    title = _("Contract Status")  # Human-readable title which will be displayed
-    parameter_name = "contract_status"  # URL parameter name for filtering
+    title = _('Contract Status')  # Human-readable title which will be displayed
+    parameter_name = 'contract_status'  # URL parameter name for filtering
 
     def lookups(self, request, model_admin):
         """
@@ -225,14 +213,14 @@ class MultiStatusFilter(admin.SimpleListFilter):
         """
         if self.value():
             # Splitting the values on commas allows for multiple statuses to be filtered
-            filter_values = self.value().split(",")
+            filter_values = self.value().split(',')
             return queryset.filter(contract_status__in=filter_values)
         return queryset
 
 
 class AccountManagerFilter(admin.SimpleListFilter):
-    title = "Account Manager"
-    parameter_name = "account_manager"
+    title = 'Account Manager'
+    parameter_name = 'account_manager'
 
     def lookups(self, request, model_admin):
         # Return a list of tuples (value, verbose_name) for the filter options
@@ -249,7 +237,7 @@ class AccountManagerFilter(admin.SimpleListFilter):
 # End Custom Filters
 
 
-class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
+class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
     show_full_result_count = False
     resource_class = ContractResource
     list_per_page = 10
@@ -287,10 +275,13 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     ("client", "client_group", "business_name", "client_manager"),
                     "site_address",
                     "supplier",
+                    "previous_supplier",
+                    "supplier_changed_date",
                     "utility",
                     "mpan_mpr",
                     "meter_serial_number",
                     "meter_status",
+                    "smart_meter",
                     "top_line",
                     "vat_rate",
                     "vat_declaration_sent",
@@ -336,9 +327,6 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "description": "The following only applies to seamless contracts",
                 "fields": (
                     (
-                        # "dwellent_id",
-                        # "bid_id",
-                        # "portal_status",
                         "supplier_coding",
                     ),
                     ("building_name", "billing_address"),
@@ -386,29 +374,29 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 ),
             },
         ),
-        #     (
-        #         "Future Contract Information",
-        #         {
-        #             "description": "Enter future contract information",
-        #             "fields": (
-        #                 "future_contract_start_date",
-        #                 "future_contract_end_date",
-        #                 "future_supplier",
-        #                 "future_unit_rate_1",
-        #                 "future_unit_rate_2",
-        #                 "future_unit_rate_3",
-        #                 "future_standing_charge",
-        #             ),
-        #         },
-        #     ),
+        # (
+        #     "Future Contract Information",
+        #     {
+        #         "description": "Enter future contract information",
+        #         "fields": (
+        #             "future_contract_start_date",
+        #             "future_contract_end_date",
+        #             "future_supplier",
+        #             "future_unit_rate_1",
+        #             "future_unit_rate_2",
+        #             "future_unit_rate_3",
+        #             "future_standing_charge",
+        #         ),
+        #     },
+        # ),
         ("Notes", {"description": "Additional Information", "fields": ("notes",)}),
     )
     list_filter = [
         "contract_type",
         "seamless_updated",
         MultiStatusFilter,
-        ClientFilter,
         AccountManagerFilter,
+        ClientFilter,
         "client_group",
         ClientManagerFilter,
         SupplierFilter,
@@ -423,7 +411,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         StartDateIsNullFilter,
         ContractFilter,
         "meter_status",
-        # FutureSupplierFilter,
+        PreviousSupplierFilter,
     ]
     autocomplete_fields = [
         "client",
@@ -440,8 +428,8 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         use_distinct = False
 
         # Check if the search_term involves potential multiple MPAN numbers
-        if "," in search_term:
-            mpan_terms = [term.strip() for term in search_term.split(",") if term.strip()]
+        if ',' in search_term:
+            mpan_terms = [term.strip() for term in search_term.split(',') if term.strip()]
             if mpan_terms:
                 q_objects = Q(mpan_mpr__iexact=mpan_terms[0])  # Start with the first term
                 for term in mpan_terms[1:]:
@@ -551,7 +539,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     def bulk_quote_template(self, request, queryset):
         # Check if the user has the required permission
-        if not request.user.has_perm("contracts.can_access_bulk_quote_template"):
+        if not request.user.has_perm('contracts.can_access_bulk_quote_template'):
             messages.error(request, "You do not have permission to use the bulk upload template.")
             # If the user does not have permission, return a HTTP Forbidden response or any other appropriate action
             return HttpResponseRedirect(reverse("admin:index"))
@@ -560,7 +548,6 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         fields_to_export = [
             "id",
             "client",
-            "contract_term",
             "billing_address",
             "company_reg_number",
             "business_name",
@@ -570,6 +557,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             "supplier",
             "contract_type",
             "contract_status",
+            "contract_term",
             "contract_end_date",
             "eac",
             "is_directors_approval",
@@ -611,14 +599,14 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     def export_commissions_to_excel(self, request, queryset):
         # Check if the user has the 'can_export_commissions' permission
-        if not request.user.has_perm("contracts.can_export_commissions"):
+        if not request.user.has_perm('contracts.can_export_commissions'):
             # If the user does not have the permission, display a message and redirect
             messages.error(request, "You do not have permission to export commissions.")
-            return HttpResponseRedirect(reverse("admin:index"))
+            return HttpResponseRedirect(reverse('admin:index'))
         response = HttpResponse(
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
-        response["Content-Disposition"] = "attachment; filename=commissions_by_utility.xlsx"
+        response["Content-Disposition"] = "attachment; filename=contract_commissions_by_client.xlsx"
 
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -630,7 +618,9 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             "Contract Type",
             "Originator",
             "Client Onboarded",
+            "Supplier",
             "Utility",
+            "MPAN/MPR",
             "Commission per Unit Rate",
             "Commission per Annum Rate",
             "Total EAC",
@@ -647,7 +637,9 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 "contract_type",
                 "client__originator",
                 "client__client_onboarded",
-                "utility__utility",  # Assuming 'utility' field is a ForeignKey to a Utility model
+                "supplier__supplier",
+                "utility__utility",
+                "mpan_mpr", # Assuming 'utility' field is a ForeignKey to a Utility model
                 "commission_per_unit",
                 "commission_per_annum",
             )
@@ -670,7 +662,9 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                     contract["contract_type"],
                     contract["client__originator"],
                     contract["client__client_onboarded"],
+                    contract['supplier__supplier'],
                     contract["utility__utility"],
+                    contract["mpan_mpr"],
                     contract["commission_per_unit"],
                     contract["commission_per_annum"],
                     contract["total_eac"],
@@ -682,7 +676,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
         wb.save(response)
         return response
 
-    export_commissions_to_excel.short_description = "Export Commissions by to Excel"
+    export_commissions_to_excel.short_description = "Export Client Commissions to Excel"
 
     def export_duplicates_to_excel(self, request, queryset):
         # Filter contracts based on the provided queryset and annotate them with a count of duplicates
@@ -773,12 +767,10 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
 
     def export_combined_report(self, request, queryset):
         # Filter out contracts with statuses 'Lost' or 'Removed'
-        queryset = queryset.exclude(contract_status__in=["LOST", "REMOVED"])
+        queryset = queryset.exclude(contract_status__in=['LOST', 'REMOVED'])
 
         # Set up the response for Excel file
-        response = HttpResponse(
-            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
+        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         response["Content-Disposition"] = 'attachment; filename="All_Reports.xlsx"'
 
         # Use ExcelWriter to write multiple sheets
@@ -786,7 +778,8 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             # Process and export "Contracts By Status"
             df_status = pd.DataFrame.from_records(
                 queryset.annotate(
-                    count=Count("id"), client_contract_status=F("contract_status")
+                    count=Count("id"),
+                    client_contract_status=F("contract_status")
                 ).values("client_contract_status", "count")
             )
             pivot_table_status = df_status.pivot_table(
@@ -794,7 +787,7 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
                 index=["client_contract_status"],
                 aggfunc="sum",
                 margins=True,
-                margins_name="Total",
+                margins_name="Total"
             )
             pivot_table_status.to_excel(writer, sheet_name="Contract Status Count")
 
@@ -803,27 +796,23 @@ class ContractAdmin(ImportExportModelAdmin, admin.ModelAdmin):
             worksheet.auto_filter.ref = "A:A"  # Apply auto filter on all columns
 
             # Process and export "DA Approval Status"
-            df_approval = pd.DataFrame.from_records(queryset.values("is_directors_approval"))
-            total_yes = (df_approval["is_directors_approval"] == "YES").sum()
-            total_no = (df_approval["is_directors_approval"] == "NO").sum()
-            approval_df = pd.DataFrame(
-                {
-                    "Approval Status": ["YES", "NO", "Total"],
-                    "Total": [total_yes, total_no, total_yes + total_no],
-                }
-            )
+            df_approval = pd.DataFrame.from_records(queryset.values('is_directors_approval'))
+            total_yes = (df_approval['is_directors_approval'] == 'YES').sum()
+            total_no = (df_approval['is_directors_approval'] == 'NO').sum()
+            approval_df = pd.DataFrame({
+                'Approval Status': ['YES', 'NO', 'Total'],
+                'Total': [total_yes, total_no, total_yes + total_no]
+            })
             approval_df.to_excel(writer, index=False, sheet_name="DA Approval Status")
 
             # Process and export "OOC Status Counts"
-            df_ooc = pd.DataFrame.from_records(queryset.values("is_ooc"))
-            total_yes = (df_ooc["is_ooc"] == "YES").sum()
-            total_no = (df_ooc["is_ooc"] == "NO").sum()
-            ooc_df = pd.DataFrame(
-                {
-                    "OOC Status": ["YES", "NO", "Total"],
-                    "Total": [total_yes, total_no, total_yes + total_no],
-                }
-            )
+            df_ooc = pd.DataFrame.from_records(queryset.values('is_ooc'))
+            total_yes = (df_ooc['is_ooc'] == 'YES').sum()
+            total_no = (df_ooc['is_ooc'] == 'NO').sum()
+            ooc_df = pd.DataFrame({
+                'OOC Status': ['YES', 'NO', 'Total'],
+                'Total': [total_yes, total_no, total_yes + total_no]
+            })
             ooc_df.to_excel(writer, index=False, sheet_name="OOC Status Count")
 
         return response

@@ -101,6 +101,8 @@
                             <li class="list-group-item">Pence per Kilowatt: {{ contract.pence_per_kilowatt }}</li>
                             <li class="list-group-item">Day Kilowatt Hour Rate: {{ contract.day_kilowatt_hour_rate }}</li>
                             <li class="list-group-item">Night Rate: {{ contract.night_rate }}</li>
+                           <li class="list-group-item">Night Rate: {{ contract.night_rate }}</li>
+
                         </ul>
                     </div>
                 </div>
@@ -112,14 +114,7 @@
                         <h2 class="fs-6 card-title text-center mt-2">Future Contract Rates</h2>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Start Date: {{ contract.future_contract_start_date }}</li>
-                            <li class="list-group-item">End Date: {{ contract.future_contract_end_date }}</li>
-                            <li class="list-group-item">Unit Rate 1: {{ contract.future_unit_rate_1 }}</li>
-                            <li class="list-group-item">Unit Rate 2: {{ contract.future_unit_rate_2 }}</li>
-                            <li class="list-group-item">Unit Rate 3: {{ contract.future_unit_rate_3 }}</li>
-                            <li class="list-group-item">Standing Charge: {{ contract.future_standing_charge }}</li>
-                        </ul>
+                         <p>{{ contract.notes }}</p>
                     </div>
                 </div>
             </div>
