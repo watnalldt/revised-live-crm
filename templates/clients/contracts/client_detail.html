@@ -39,8 +39,7 @@
                                 <th scope="col">CED</th>
                                 <th scope="col">D/A</th>
                                 <th scope="col">Detail</th>
-                              <th scope="col">Notes</th>
-
+                                <th scope="col">Notes</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -85,8 +84,10 @@
                                         <a href="{% url 'clients:contract_detail' contract.id %}">
                                             <i class="fa-solid fa-file" style="font-size: 20px; color:green;"></i></a>
                                     </td>
-                              <td><a href="{% url 'contracts:contract_notes_update' contract.id %}">
-                                            <i class="fa-solid fa-pencil" style="font-size: 20px; color:green;"></i></a></td>
+                                    <td>
+                                        <a href="{% url 'contracts:contract_notes_update' contract.id %}">
+                                            <i class="fa-solid fa-pencil" style="font-size: 20px; color:green;"></i></a>
+                                    </td>
                                 {% endfor %}
                             </tr>
                         </tbody>

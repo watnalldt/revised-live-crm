@@ -5,5 +5,6 @@ class ContractsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "contracts"
 
+    # noinspection PyUnresolvedReferences
     def ready(self):
-        pass
+        import contracts.signals
