@@ -459,7 +459,6 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         "export_duplicates_to_excel",
         "export_combined_report",
         "export_expired_contracts",
-        "export_duplicates_no_11111",
     ]
 
     @admin.action(description="Directors Approval Not Required")
@@ -526,7 +525,7 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         # Check if the user has the required permission
         if not request.user.has_perm("contracts.can_access_bulk_quote_template"):
             messages.error(request, "You do not have permission to use the bulk upload template.")
-            # If the user does not have permission, return a HTTP Forbidden response or any other appropriate action
+            # If the user does not have permission, return an HTTP Forbidden response or any other appropriate action
             return HttpResponseRedirect(reverse("admin:index"))
 
         # Specify the fields you want to export
@@ -663,202 +662,25 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
 
     export_commissions_to_excel.short_description = "Export Client Commissions to Excel"
 
-    # def export_duplicates_to_excel(self, request, queryset):
-    #     # Filter contracts based on the provided queryset and annotate them with a count of duplicates
-    #     contracts_with_duplicates = (
-    #         Contract.objects.filter(mpan_mpr__in=queryset.values_list("mpan_mpr", flat=True))
-    #         .values("mpan_mpr", "contract_end_date")
-    #         .annotate(duplicates_count=Count("id"))
-    #         .filter(duplicates_count__gt=1)
-    #     )
-    #
-    #     # Prepare a dictionary of MPAN/MPR and their corresponding contract_end_date with duplicates count
-    #     duplicates = {
-    #         item["mpan_mpr"]: {
-    #             "contract_end_date": item["contract_end_date"],
-    #             "duplicates_count": item["duplicates_count"],
-    #         }
-    #         for item in contracts_with_duplicates
-    #     }
-    #
-    #     # Filter original contracts including those in the duplicates dictionary
-    #     annotated_contracts = Contract.objects.filter(mpan_mpr__in=duplicates.keys()).annotate(
-    #         row_number=Window(
-    #             expression=RowNumber(),
-    #             partition_by=[F("mpan_mpr"), F("contract_end_date")],
-    #             order_by=F("id").asc(),
-    #         )
-    #     )
-    #
-    #     # Prepare the Excel file
-    #     output, workbook = BytesIO(), Workbook()
-    #     worksheet = workbook.active
-    #     worksheet.title = "Duplicate Contracts"
-    #
-    #     # Set headers with bold font, including duplicates count
-    #     headers = [
-    #         "ID",
-    #         "Client",
-    #         "Business Name",
-    #         "MPAN",
-    #         "Contract Status",
-    #         "Contract Start Date",
-    #         "Contract End Date",
-    #         "Duplicates Count",
-    #     ]
-    #     worksheet.append(headers)
-    #     for cell in worksheet[1]:
-    #         cell.font = Font(bold=True)
-    #
-    #     # Append data rows for each duplicate contract, including duplicates count
-    #     for contract in annotated_contracts:
-    #         contract_start_date_uk = (
-    #             contract.contract_start_date.strftime("%d/%m/%Y")
-    #             if contract.contract_start_date
-    #             else ""
-    #         )
-    #         contract_end_date_uk = (
-    #             contract.contract_end_date.strftime("%d/%m/%Y")
-    #             if contract.contract_end_date
-    #             else ""
-    #         )
-    #         mpan_mpr = contract.mpan_mpr
-    #         duplicates_count = (
-    #             duplicates[mpan_mpr]["duplicates_count"] if mpan_mpr in duplicates else 0
-    #         )
-    #         worksheet.append(
-    #             [
-    #                 contract.id,
-    #                 contract.client.client,
-    #                 contract.business_name,
-    #                 mpan_mpr,
-    #                 contract.contract_status,
-    #                 contract_start_date_uk,
-    #                 contract_end_date_uk,
-    #                 duplicates_count,  # Include duplicates count
-    #             ]
-    #         )
-    #
-    #     # Save and prepare for download
-    #     workbook.save(output)
-    #     output.seek(0)
-    #     response = HttpResponse(
-    #         output, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    #     )
-    #     response["Content-Disposition"] = 'attachment; filename="duplicate_contracts.xlsx"'
-    #     return response
-    #
-    # export_duplicates_to_excel.short_description = "Export Duplicate Contracts to Excel"
-
-    # def export_duplicates_to_excel(self, request, queryset):
-    #     # Filter contracts based on the provided queryset and annotate them with a count of duplicates
-    #     contracts_with_duplicates = (
-    #         Contract.objects.filter(
-    #             mpan_mpr__in=queryset.values_list("mpan_mpr", flat=True)
-    #         )
-    #         .values("mpan_mpr", "contract_status", "contract_end_date")
-    #         .annotate(duplicates_count=Count("id"))
-    #         .filter(duplicates_count__gt=1)
-    #     )
-    #
-    #     # Prepare a dictionary of MPAN/MPR and their corresponding contract_status and contract_end_date with duplicates count
-    #     duplicates = {
-    #         (item["mpan_mpr"], item["contract_status"], item["contract_end_date"]): item["duplicates_count"]
-    #         for item in contracts_with_duplicates
-    #     }
-    #
-    #     # Filter original contracts including those in the duplicates dictionary
-    #     annotated_contracts = Contract.objects.filter(
-    #         mpan_mpr__in=[key[0] for key in duplicates.keys()],
-    #         contract_status__in=[key[1] for key in duplicates.keys()],
-    #         contract_end_date__in=[key[2] for key in duplicates.keys()],
-    #     ).annotate(
-    #         row_number=Window(
-    #             expression=RowNumber(),
-    #             partition_by=[F("mpan_mpr"), F("contract_status"), F("contract_end_date")],
-    #             order_by=F("id").asc(),
-    #         )
-    #     )
-    #
-    #     # Prepare the Excel file
-    #     output, workbook = BytesIO(), Workbook()
-    #     worksheet = workbook.active
-    #     worksheet.title = "Duplicate Contracts"
-    #
-    #     # Set headers with bold font, including duplicates count
-    #     headers = [
-    #         "ID",
-    #         "Client",
-    #         "Business Name",
-    #         "MPAN",
-    #         "Contract Status",
-    #         "Contract Start Date",
-    #         "Contract End Date",
-    #         "Duplicates Count",
-    #     ]
-    #     worksheet.append(headers)
-    #     for cell in worksheet[1]:
-    #         cell.font = Font(bold=True)
-    #
-    #     # Append data rows for each duplicate contract, including duplicates count
-    #     for contract in annotated_contracts:
-    #         contract_start_date_uk = (
-    #             contract.contract_start_date.strftime("%d/%m/%Y")
-    #             if contract.contract_start_date
-    #             else ""
-    #         )
-    #         contract_end_date_uk = (
-    #             contract.contract_end_date.strftime("%d/%m/%Y")
-    #             if contract.contract_end_date
-    #             else ""
-    #         )
-    #         mpan_mpr = contract.mpan_mpr
-    #         contract_status = contract.contract_status
-    #         contract_end_date = contract.contract_end_date
-    #         duplicates_count = (
-    #             duplicates[(mpan_mpr, contract_status, contract_end_date)]
-    #             if (mpan_mpr, contract_status, contract_end_date) in duplicates
-    #             else 0
-    #         )
-    #         worksheet.append(
-    #             [
-    #                 contract.id,
-    #                 contract.client.client,
-    #                 contract.business_name,
-    #                 mpan_mpr,
-    #                 contract.contract_status,
-    #                 contract_start_date_uk,
-    #                 contract_end_date_uk,
-    #                 duplicates_count,  # Include duplicates count
-    #             ]
-    #         )
-    #
-    #     # Save and prepare for download
-    #     workbook.save(output)
-    #     output.seek(0)
-    #     response = HttpResponse(
-    #         output, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    #     )
-    #     response["Content-Disposition"] = 'attachment; filename="duplicate_contracts.xlsx"'
-    #     return response
-    #
-    # export_duplicates_to_excel.short_description = "Export Duplicate Contracts to Excel"
-
     def export_duplicates_to_excel(self, request, queryset):
-        # Filter contracts based on the provided queryset and fetch all duplicates
+        # Exclude contracts with MPAN 11111 and fetch all duplicates
         duplicates_qs = (
             Contract.objects.filter(mpan_mpr__in=queryset.values_list("mpan_mpr", flat=True))
+            .exclude(mpan_mpr="11111")
             .annotate(
-                duplicates_count=Window(
+                row_number=Window(
                     expression=Count("id"),
-                    partition_by=[F("mpan_mpr"), F("contract_status"), F("contract_end_date")],
+                    partition_by=[F("business_name"), F("mpan_mpr"), F("contract_status"), F("contract_end_date")],
+                    order_by=F("id").asc(),
                 )
             )
-            .filter(duplicates_count__gt=1)
+            .filter(row_number__gt=1)
+            .order_by("client__client")  # Sort by client name
         )
 
         # Prepare the Excel file
-        output, workbook = BytesIO(), Workbook()
+        output = BytesIO()
+        workbook = Workbook()
         worksheet = workbook.active
         worksheet.title = "Duplicate Contracts"
 
@@ -971,19 +793,21 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
     export_combined_report.short_description = "Export Combined Report"
 
     def export_expired_contracts(self, request, queryset):
-        # Filter contracts based on conditions
+        # Get today's date
+        today = datetime.date.today()
+
+        # Filter contracts that have expired prior to today
         contracts = queryset.filter(
-            contract_end_date__lt=datetime.date(2024, 3, 31),
+            contract_end_date__lt=today,
             is_ooc="YES",
         ).exclude(
-            mpan_mpr__in=queryset.filter(contract_end_date__gt=datetime.date(2024, 3, 31)).values(
-                "mpan_mpr"
-            )
-        )
+            mpan_mpr__in=queryset.filter(contract_end_date__gte=today).values("mpan_mpr")
+        ).order_by("client__client")
 
         # Create Excel workbook and sheet
         wb = openpyxl.Workbook()
         ws = wb.active
+        ws.title = "Expired Contracts"
         ws.append(["ID", "Client", "MPAN Number", "Contract Status", "Contract End Date", "OOC"])
 
         # Write contract data to Excel sheet with UK date format
@@ -1011,75 +835,6 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
 
     export_expired_contracts.short_description = "Export expired contracts no follow on"
 
-    def export_duplicates_no_11111(self, request, queryset):
-        # Exclude contracts with MPAN 11111 and fetch all duplicates
-        duplicates_qs = (
-            Contract.objects.filter(mpan_mpr__in=queryset.values_list("mpan_mpr", flat=True))
-            .exclude(mpan_mpr="11111")
-            .annotate(
-                row_number=Window(
-                    expression=Count("id"),
-                    partition_by=[F("mpan_mpr"), F("contract_status"), F("contract_end_date")],
-                    order_by=F("id").asc(),
-                )
-            )
-            .filter(row_number__gt=1)
-        )
-
-        # Prepare the Excel file
-        output = BytesIO()
-        workbook = Workbook()
-        worksheet = workbook.active
-        worksheet.title = "Duplicate Contracts"
-
-        # Set headers with bold font
-        headers = [
-            "ID",
-            "Client",
-            "Business Name",
-            "MPAN",
-            "Contract Status",
-            "Contract Start Date",
-            "Contract End Date",
-        ]
-        worksheet.append(headers)
-        for cell in worksheet[1]:
-            cell.font = Font(bold=True)
-
-        # Append data rows for each duplicate contract
-        for contract in duplicates_qs:
-            contract_start_date_uk = (
-                contract.contract_start_date.strftime("%d/%m/%Y")
-                if contract.contract_start_date
-                else ""
-            )
-            contract_end_date_uk = (
-                contract.contract_end_date.strftime("%d/%m/%Y")
-                if contract.contract_end_date
-                else ""
-            )
-            worksheet.append(
-                [
-                    contract.id,
-                    contract.client.client,
-                    contract.business_name,
-                    contract.mpan_mpr,
-                    contract.contract_status,
-                    contract_start_date_uk,
-                    contract_end_date_uk,
-                ]
-            )
-
-        # Save and prepare for download
-        workbook.save(output)
-        output.seek(0)
-        response = HttpResponse(
-            output, content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        )
-        response["Content-Disposition"] = 'attachment; filename="duplicate_contracts.xlsx"'
-        return response
-
-    export_duplicates_no_11111.short_description = "Export Duplicate Contracts No 11111"
 
     def link_to_clients(self, obj):
         link = reverse("admin:clients_client_change", args=[obj.client.id])
