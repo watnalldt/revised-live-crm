@@ -670,7 +670,12 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
             .annotate(
                 row_number=Window(
                     expression=Count("id"),
-                    partition_by=[F("business_name"), F("mpan_mpr"), F("contract_status"), F("contract_end_date")],
+                    partition_by=[
+                        F("business_name"),
+                        F("mpan_mpr"),
+                        F("contract_status"),
+                        F("contract_end_date"),
+                    ],
                     order_by=F("id").asc(),
                 )
             )
@@ -797,12 +802,14 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         today = datetime.date.today()
 
         # Filter contracts that have expired prior to today
-        contracts = queryset.filter(
-            contract_end_date__lt=today,
-            is_ooc="YES",
-        ).exclude(
-            mpan_mpr__in=queryset.filter(contract_end_date__gte=today).values("mpan_mpr")
-        ).order_by("client__client")
+        contracts = (
+            queryset.filter(
+                contract_end_date__lt=today,
+                is_ooc="YES",
+            )
+            .exclude(mpan_mpr__in=queryset.filter(contract_end_date__gte=today).values("mpan_mpr"))
+            .order_by("client__client")
+        )
 
         # Create Excel workbook and sheet
         wb = openpyxl.Workbook()
@@ -834,7 +841,6 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         return response
 
     export_expired_contracts.short_description = "Export expired contracts no follow on"
-
 
     def link_to_clients(self, obj):
         link = reverse("admin:clients_client_change", args=[obj.client.id])
