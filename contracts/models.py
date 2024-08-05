@@ -152,6 +152,9 @@ class Contract(models.Model):
         choices=BaseYesNo.choices,
         default=BaseYesNo.NO,
     )
+    directors_approval_date = models.DateField(
+        verbose_name="Directors Approval Date", null=True, blank=True
+    )
     business_name = models.CharField(verbose_name="Business Name", max_length=255)
     company_reg_number = models.CharField(
         verbose_name="Company Reg Number", max_length=250, null=True, blank=True
@@ -193,14 +196,6 @@ class Contract(models.Model):
         related_name="contract_suppliers",
     )
     supplier_coding = models.CharField(max_length=50, null=True, blank=True)
-    previous_supplier = models.ForeignKey(
-        Supplier,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="previous_contracts",
-    )
-    supplier_changed_date = models.DateField(null=True, blank=True)
     contract_start_date = models.DateField(
         verbose_name="Contract Start Date", null=True, blank=True
     )

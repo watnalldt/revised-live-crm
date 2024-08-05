@@ -49,6 +49,11 @@ class Client(TimeStampedModel):
         default=False,
         verbose_name="Lost Client",
     )
+    client_lost_date = models.DateField(verbose_name="Client Lost Date", null=True, blank=True)
+    export_confirmed = models.BooleanField(
+        default=False,
+        verbose_name="Confirmation of Export",
+    )
     notes = models.TextField(null=True, blank=True)
     history = HistoricalRecords()
 

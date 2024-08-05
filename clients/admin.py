@@ -6,6 +6,8 @@ from django.utils.translation import gettext_lazy as _
 from import_export import fields, resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
+from django import forms
+from django.contrib import messages
 
 from .models import Client
 from core.decorators import admin_changelist_link
@@ -13,6 +15,29 @@ from core.decorators import admin_changelist_link
 from commissions.models import ElectricityCommission, GasCommission
 
 User = get_user_model()
+
+
+class ClientAdminForm(forms.ModelForm):
+    confirm_export = forms.BooleanField(
+        required=False, label="You must confirm you have exported all the contracts"
+    )
+
+    class Meta:
+        model = Client
+        fields = "__all__"
+
+    def clean(self):
+        cleaned_data = super().clean()
+        is_lost = cleaned_data.get("is_lost")
+        confirm_export = cleaned_data.get("confirm_export")
+
+        if is_lost and not self.instance.is_lost and not confirm_export:
+            raise forms.ValidationError(
+                "Please export all relevant contracts and confirm you have exported the contracts"
+                " before marking this client as lost."
+            )
+
+        return cleaned_data
 
 
 class ElectricityCommissionResource(resources.ModelResource):
@@ -50,6 +75,7 @@ class ClientResource(resources.ModelResource):
             "client_onboarded",
             "loa",
             "is_lost",
+            "client_lost_date",
         ]
         import_id_fields = ["id"]
 
@@ -62,11 +88,13 @@ class ClientResource(resources.ModelResource):
             "client_onboarded",
             "loa",
             "is_lost",
+            "client_lost_date",
         )
 
 
 class ClientAdmin(ImportExportModelAdmin):
     show_full_result_count = False
+    form = ClientAdminForm
     resource_class = ClientResource
     inlines = [ElectricityCommissionInline, GasCommissionInline]
     list_display = (
@@ -76,6 +104,7 @@ class ClientAdmin(ImportExportModelAdmin):
         "originator",
         "client_onboarded",
         "is_lost",
+        "client_lost_date",
         "loa",
         "link_to_account_managers",
         "contracts_link",
@@ -86,6 +115,39 @@ class ClientAdmin(ImportExportModelAdmin):
         "account_manager",
     )
     list_select_related = ("account_manager",)
+    fieldsets = (
+        (
+            "Client Information",
+            {
+                "description": "Enter the Client details",
+                "fields": (
+                    ("client", "account_manager"),
+                    ("originator", "client_onboarded"),
+                    ("loa", "contract_term"),
+                    "notes",
+                ),
+            },
+        ),
+        (
+            "Lost Client Information",
+            {
+                "description": "",
+                "fields": (
+                    (
+                        "is_lost",
+                        "confirm_export",
+                    ),
+                ),
+            },
+        ),
+        (
+            "Lost Client Audit Information",
+            {
+                "description": "These are information fields only and are automatically system generated",
+                "fields": (("client_lost_date", "export_confirmed"),),
+            },
+        ),
+    )
     autocomplete_fields = ("account_manager",)
     search_fields = ("client", "account_manager__email")
     list_per_page = 25
@@ -118,6 +180,24 @@ class ClientAdmin(ImportExportModelAdmin):
                 form.base_fields.pop("is_lost")
 
         return form
+
+    def save_model(self, request, obj, form, change):
+        if obj.is_lost and not Client.objects.get(id=obj.id).is_lost:
+            if form.cleaned_data.get("confirm_export"):
+                obj.export_confirmed = True
+                self.message_user(
+                    request,
+                    "Client marked as lost. Contracts export confirmed.",
+                    level=messages.SUCCESS,
+                )
+            else:
+                self.message_user(
+                    request,
+                    "Please confirm the contracts export before marking the client as lost.",
+                    level=messages.ERROR,
+                )
+                return
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(Client, ClientAdmin)

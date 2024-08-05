@@ -4,7 +4,15 @@ import datetime
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.db.models import Count, ExpressionWrapper, F, FloatField, Sum, Q, Window
+from django.db.models import (
+    Count,
+    ExpressionWrapper,
+    F,
+    FloatField,
+    Sum,
+    Q,
+    Window,
+)
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import format_html
@@ -49,11 +57,6 @@ class UtilityTypeFilter(AutocompleteFilter):
     field_name = "utility"  # name of the foreign key field
 
 
-class PreviousSupplierFilter(AutocompleteFilter):
-    title = "Previous Supplier"  # display title
-    field_name = "previous_supplier"  # name of the foreign key field
-
-
 class ContractResource(resources.ModelResource):
     client = fields.Field(
         column_name="client", attribute="client", widget=ForeignKeyWidget(Client, "client")
@@ -70,12 +73,6 @@ class ContractResource(resources.ModelResource):
         column_name="utility", attribute="utility", widget=ForeignKeyWidget(Utility, "utility")
     )
 
-    previous_supplier = fields.Field(
-        column_name="previous_supplier",
-        attribute="previous_supplier",
-        widget=ForeignKeyWidget(Supplier, "supplier"),
-    )
-
     class Meta:
         model = Contract
         report_skipped = True
@@ -89,6 +86,7 @@ class ContractResource(resources.ModelResource):
             "client_group",
             "client_manager",
             "is_directors_approval",
+            "directors_approval_date",
             "business_name",
             "company_reg_number",
             "utility",
@@ -102,8 +100,6 @@ class ContractResource(resources.ModelResource):
             "billing_address",
             "supplier",
             "supplier_coding",
-            "previous_supplier",
-            "supplier_changed_date",
             "contract_start_date",
             "contract_end_date",
             "lock_in_date",
@@ -277,8 +273,6 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
                     ("client", "client_group", "business_name", "client_manager"),
                     "site_address",
                     "supplier",
-                    "previous_supplier",
-                    "supplier_changed_date",
                     "utility",
                     "mpan_mpr",
                     "meter_serial_number",
@@ -302,6 +296,7 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
                         "company_reg_number",
                     ),
                     "is_directors_approval",
+                    "directors_approval_date",
                     "contract_type",
                     "contract_status",
                     "meter_onboarded",
@@ -396,7 +391,6 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         StartDateIsNullFilter,
         ContractFilter,
         "meter_status",
-        PreviousSupplierFilter,
     ]
     autocomplete_fields = [
         "client",
@@ -670,7 +664,12 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
             .annotate(
                 row_number=Window(
                     expression=Count("id"),
-                    partition_by=[F("business_name"), F("mpan_mpr"), F("contract_status"), F("contract_end_date")],
+                    partition_by=[
+                        F("business_name"),
+                        F("mpan_mpr"),
+                        F("contract_status"),
+                        F("contract_end_date"),
+                    ],
                     order_by=F("id").asc(),
                 )
             )
@@ -797,12 +796,14 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         today = datetime.date.today()
 
         # Filter contracts that have expired prior to today
-        contracts = queryset.filter(
-            contract_end_date__lt=today,
-            is_ooc="YES",
-        ).exclude(
-            mpan_mpr__in=queryset.filter(contract_end_date__gte=today).values("mpan_mpr")
-        ).order_by("client__client")
+        contracts = (
+            queryset.filter(
+                contract_end_date__lt=today,
+                is_ooc="YES",
+            )
+            .exclude(mpan_mpr__in=queryset.filter(contract_end_date__gte=today).values("mpan_mpr"))
+            .order_by("client__client")
+        )
 
         # Create Excel workbook and sheet
         wb = openpyxl.Workbook()
@@ -834,7 +835,6 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin):
         return response
 
     export_expired_contracts.short_description = "Export expired contracts no follow on"
-
 
     def link_to_clients(self, obj):
         link = reverse("admin:clients_client_change", args=[obj.client.id])

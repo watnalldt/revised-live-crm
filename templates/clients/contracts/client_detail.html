@@ -15,6 +15,7 @@
                     <table id="cl_list" class="display nowrap" style="width:100%">
                         <thead>
                             <tr>
+                                <th scope="col">Client</th>
                                 <th scope="col">Type</th>
                                 <th scope="col">Status</th>
                                 <th>Client Group</th>
@@ -24,6 +25,8 @@
                                 <th scope="col">Utility</th>
                                 <th scope="col">MPAN/MPR</th>
                                 <th scope="col">Meter Serial Number</th>
+                                <th scope="col">Commission Per Annum</th>
+                                <th scope="col">Commission Per Unit</th>
                                 <th scope="col">Smart Meter</th>
                                 <th scope="col">Top Line</th>
                                 <th scope="col">EAC</th>
@@ -37,6 +40,7 @@
                                 <th scope="col">Unit Rate 3</th>
                                 <th scope="col">Feed In Tariff</th>
                                 <th scope="col">CED</th>
+                                <th scope="col">Vat Rate</th>
                                 <th scope="col">D/A</th>
                                 <th scope="col">Detail</th>
                                 <th scope="col">Notes</th>
@@ -45,6 +49,7 @@
                         <tbody>
                             {% for contract in client.client_contracts.all %}
                                 <tr>
+                                    <td>{{ contract.client }}</td>
                                     {% if contract.contract_type == "NON_SEAMLESS" %}
                                         <td>{% trans "NS" %}</td>
                                     {% elif contract.contract_type == "SEAMLESS" %}
@@ -58,6 +63,8 @@
                                     <td>{{ contract.utility }}</td>
                                     <td>{{ contract.mpan_mpr }}</td>
                                     {% with contract.meter_serial_number|treat_as_string as treated_value %}<td>{{ treated_value }}</td>{% endwith %}
+                                    <td>{{ contract.commission_per_annum }}</td>
+                                    <td>{{ contract.commission_per_unit }}</td>
                                     <td>{{ contract.smart_meter }}</td>
                                     <td>{{ contract.top_line }}</td>
                                     <td>{{ contract.eac }}</td>
@@ -75,6 +82,7 @@
                                     {% else %}
                                         <td>{{ contract.contract_end_date }}</td>
                                     {% endif %}
+                                    <td>{{ contract.vat_rate }}</td>
                                     {% if contract.is_directors_approval == "YES" %}
                                         <td>{% trans "D/A" %}</td>
                                     {% else %}

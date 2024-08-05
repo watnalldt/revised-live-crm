@@ -1,0 +1,111 @@
+{% extends "base.html" %}  {# Assuming you have a base template, if not, remove this line #}
+
+{% block content %}
+<div class="chart-container font-size-14">
+     <h2 class="fs-6 text-center">Contract Status Chart</h2>
+
+    <div id="totalContracts" class="total-contracts">
+        Total Contracts in the CRM: <span id="totalCount">Loading...</span>
+    </div>
+
+    <div class="chart-wrapper">
+        <canvas id="contractStatusChart"></canvas>
+    </div>
+</div>
+
+<style>
+    .chart-container {
+        width: 60%;
+        margin: 0 auto;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .total-contracts {
+        text-align: center;
+        font-size: 1.2em;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    .chart-wrapper {
+        width: 100%;
+        height: 0;
+        padding-bottom: 75%; /* This creates a 4:3 aspect ratio */
+        position: relative;
+    }
+
+    #contractStatusChart {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (max-width: 768px) {
+        .chart-container {
+            width: 90%; /* Adjust for smaller screens */
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('{% url "contracts:contract_status_count" %}', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('contractStatusChart').getContext('2d');
+        const totalContracts = Object.values(data).reduce((a, b) => a + b, 0);
+        
+        // Update total contracts display
+        document.getElementById('totalCount').textContent = totalContracts;
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(data),
+                datasets: [{
+                    label: 'Number of Contracts',
+                    data: Object.values(data),
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Count'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: false,
+                            text: 'Contract Status'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: false,
+                        text: 'Contract Status Distribution'
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error:', error));
+});
+</script>
+{% endblock %}

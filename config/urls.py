@@ -2,14 +2,15 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
+from users.custom_admin import account_manager_admin
 
 admin.site.site_header = "Energy Portfolio Contract Management"
 admin.site.index_title = "Energy Portfolio Contract Management"
 
-
 urlpatterns = [
     path("grappelli/", include("grappelli.urls")),  # grappelli URLS
     path("ep_crm_portal/", admin.site.urls),
+    path("account-manager/", account_manager_admin.urls),  # Custom Admin Account Managers
     path("", include("pages.urls")),
     path("users/", include("users.urls")),
     path("clients/", include("clients.urls")),

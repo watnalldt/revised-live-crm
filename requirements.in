@@ -17,7 +17,7 @@ whitenoise
 # management and admin
 dj_user_login_history
 django-user-visit
-django-import-export==3.3.8
+django-import-export
 django-simple-history
 django-auto-logout
 django-grappelli
