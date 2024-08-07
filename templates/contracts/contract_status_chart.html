@@ -1,19 +1,15 @@
 {% extends "base.html" %}  {# Assuming you have a base template, if not, remove this line #}
-
 {% block content %}
-<div class="chart-container font-size-14">
-     <h2 class="fs-6 text-center">Contract Status Chart</h2>
-
-    <div id="totalContracts" class="total-contracts">
-        Total Contracts in the CRM: <span id="totalCount">Loading...</span>
+    <div class="chart-container font-size-14">
+        <h2 class="fs-6 text-center">Contract Status Chart</h2>
+        <div id="totalContracts" class="total-contracts">
+            Total Contracts in the CRM: <span id="totalCount">Loading...</span>
+        </div>
+        <div class="chart-wrapper">
+            <canvas id="contractStatusChart"></canvas>
+        </div>
     </div>
-
-    <div class="chart-wrapper">
-        <canvas id="contractStatusChart"></canvas>
-    </div>
-</div>
-
-<style>
+    <style>
     .chart-container {
         width: 60%;
         margin: 0 auto;
@@ -48,10 +44,9 @@
             width: 90%; /* Adjust for smaller screens */
         }
     }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
 document.addEventListener('DOMContentLoaded', function() {
     fetch('{% url "contracts:contract_status_count" %}', {
         headers: {
@@ -62,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         const ctx = document.getElementById('contractStatusChart').getContext('2d');
         const totalContracts = Object.values(data).reduce((a, b) => a + b, 0);
-        
+
         // Update total contracts display
         document.getElementById('totalCount').textContent = totalContracts;
 
@@ -107,5 +102,5 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => console.error('Error:', error));
 });
-</script>
-{% endblock %}
+    </script>
+{% endblock content %}
