@@ -155,6 +155,12 @@ class Contract(models.Model):
     directors_approval_date = models.DateField(
         verbose_name="Directors Approval Date", null=True, blank=True
     )
+    seed_stock = models.CharField(
+        verbose_name="Seed Stock",
+        choices=BaseYesNo.choices,
+        default=BaseYesNo.NO,
+    )
+
     business_name = models.CharField(verbose_name="Business Name", max_length=255)
     company_reg_number = models.CharField(
         verbose_name="Company Reg Number", max_length=250, null=True, blank=True

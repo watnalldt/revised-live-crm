@@ -148,6 +148,19 @@ footer a.hover { color: #8ebf42;}
   color: inherit !important; /* This makes the emphasized text inherit the white color */
 }
 
+.mi {
+  color: #2c3e50;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+}
+
+ .contact-info {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
 /* Custom CSS for the Your Contract Analytics Section */
     .analytics-highlight {
         background-color: mediumseagreen; /* Green background */

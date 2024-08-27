@@ -15,6 +15,12 @@ from django.db.models import (
 )
 import io
 from .models import Contract
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+import zipfile
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from django.utils import timezone
 
 
 @admin.action(description="Directors Approval Not Required")
@@ -263,7 +269,7 @@ def export_expired_contracts(self, request, queryset):
     # Set response headers
     response = HttpResponse(
         buffer.getvalue(),
-        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
     response["Content-Disposition"] = "attachment; filename=expired_contracts_no_follow_on.xlsx"
 
@@ -278,8 +284,8 @@ def export_corona_live_duplicates(self, request, queryset):
     duplicates_qs = (
         Contract.objects.filter(
             mpan_mpr__in=queryset.values_list("mpan_mpr", flat=True),
-            contract_status='LIVE',
-            supplier__supplier='Corona'
+            contract_status="LIVE",
+            supplier__supplier="Corona",
         )
         .exclude(mpan_mpr="11111")
         .annotate(
@@ -325,9 +331,7 @@ def export_corona_live_duplicates(self, request, queryset):
             else ""
         )
         contract_end_date_uk = (
-            contract.contract_end_date.strftime("%d/%m/%Y")
-            if contract.contract_end_date
-            else ""
+            contract.contract_end_date.strftime("%d/%m/%Y") if contract.contract_end_date else ""
         )
         worksheet.append(
             [
@@ -337,7 +341,7 @@ def export_corona_live_duplicates(self, request, queryset):
                 contract.mpan_mpr,
                 contract_start_date_uk,
                 contract_end_date_uk,
-                contract.supplier.supplier
+                contract.supplier.supplier,
             ]
         )
 
@@ -350,6 +354,7 @@ def export_corona_live_duplicates(self, request, queryset):
     response["Content-Disposition"] = 'attachment; filename="duplicate_contracts.xlsx"'
     return response
 
+
 export_corona_live_duplicates.short_description = "Corona Live Duplicates"
 
 
@@ -358,8 +363,8 @@ def export_sse_live_duplicates(self, request, queryset):
     duplicates_qs = (
         Contract.objects.filter(
             mpan_mpr__in=queryset.values_list("mpan_mpr", flat=True),
-            contract_status='LIVE',
-            supplier__supplier='SSE'
+            contract_status="LIVE",
+            supplier__supplier="SSE",
         )
         .exclude(mpan_mpr="11111")
         .annotate(
@@ -405,9 +410,7 @@ def export_sse_live_duplicates(self, request, queryset):
             else ""
         )
         contract_end_date_uk = (
-            contract.contract_end_date.strftime("%d/%m/%Y")
-            if contract.contract_end_date
-            else ""
+            contract.contract_end_date.strftime("%d/%m/%Y") if contract.contract_end_date else ""
         )
         worksheet.append(
             [
@@ -417,7 +420,7 @@ def export_sse_live_duplicates(self, request, queryset):
                 contract.mpan_mpr,
                 contract_start_date_uk,
                 contract_end_date_uk,
-                contract.supplier.supplier
+                contract.supplier.supplier,
             ]
         )
 
@@ -430,4 +433,92 @@ def export_sse_live_duplicates(self, request, queryset):
     response["Content-Disposition"] = 'attachment; filename="duplicate_contracts.xlsx"'
     return response
 
+
 export_sse_live_duplicates.short_description = "SSE Live Duplicates"
+
+EXPORT_FIELDS = ["supplier", "client", "mpan_mpr", "business_name", "site_address"]
+
+
+def get_field_value(obj, field):
+    """Helper function to get string values from objects, including related objects"""
+    value = getattr(obj, field)
+    if field in ["supplier", "client"]:
+        return str(value) if value else ""
+    elif isinstance(value, bool):
+        return "Yes" if value else "No"
+    elif value is None:
+        return ""
+    return str(value)
+
+
+def create_pdf(data, filename):
+    """Create a PDF for a single row of data"""
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer, pagesize=A4, topMargin=50, bottomMargin=50, leftMargin=50, rightMargin=50
+    )
+
+    elements = []
+    styles = getSampleStyleSheet()
+
+    # Add title
+    elements.append(Paragraph("Data Export Report", styles["Title"]))
+    elements.append(Spacer(1, 20))
+
+    # Add date
+    current_date = timezone.now().strftime("%Y-%m-%d")
+    elements.append(Paragraph(f"Date: {current_date}", styles["Normal"]))
+    elements.append(Spacer(1, 20))
+
+    # Create table with field names and values
+    table_data = [[field, data[field]] for field in EXPORT_FIELDS]
+    table = Table(table_data, colWidths=[200, 300])
+    table.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (0, -1), colors.lightgrey),
+                ("TEXTCOLOR", (0, 0), (-1, -1), colors.black),
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                ("FONTNAME", (0, 0), (-1, -1), "Helvetica"),
+                ("FONTSIZE", (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 12),
+                ("GRID", (0, 0), (-1, -1), 1, colors.black),
+            ]
+        )
+    )
+    elements.append(table)
+
+    doc.build(elements)
+    return buffer
+
+
+def export_to_excel_and_pdfs(modeladmin, request, queryset):
+    # Excel export
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Exported Data"
+    ws.append(EXPORT_FIELDS)
+    for obj in queryset:
+        ws.append([get_field_value(obj, field) for field in EXPORT_FIELDS])
+    excel_buffer = io.BytesIO()
+    wb.save(excel_buffer)
+
+    # Create HTTP response
+    response = HttpResponse(content_type="application/zip")
+    response["Content-Disposition"] = 'attachment; filename="exported_data.zip"'
+
+    # Create a zip file
+    with zipfile.ZipFile(response, "w") as zf:
+        # Add Excel file to zip
+        zf.writestr("exported_data.xlsx", excel_buffer.getvalue())
+
+        # Create individual PDFs for each row
+        for index, obj in enumerate(queryset):
+            data = {field: get_field_value(obj, field) for field in EXPORT_FIELDS}
+            pdf_buffer = create_pdf(data, f"data_{index + 1}.pdf")
+            zf.writestr(f"data_{index + 1}.pdf", pdf_buffer.getvalue())
+
+    return response
+
+
+export_to_excel_and_pdfs.short_description = "Export to Excel and individual PDFs"

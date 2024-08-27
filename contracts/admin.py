@@ -2,15 +2,31 @@ from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin, ExportActionMixin
 from .models import Contract
 from .filters import (
-    ClientFilter, SupplierFilter, UtilityTypeFilter,
-    MultiStatusFilter, AccountManagerFilter)
+    ClientFilter,
+    SupplierFilter,
+    UtilityTypeFilter,
+    MultiStatusFilter,
+    AccountManagerFilter,
+)
 from rangefilter.filters import DateRangeFilter
 from .admin_actions import (
-    directors_approval_not_required, directors_approval_required,
-    seamless_contract_updated, seamless_contract_not_updated,
-    out_of_contract, make_contract_live, make_contract_pricing, make_contract_objection,
-    make_contract_locked, contracts_removed, contracts_lost, bulk_quote_template, export_commissions_to_excel,
-    export_expired_contracts, export_corona_live_duplicates, export_sse_live_duplicates,
+    directors_approval_not_required,
+    directors_approval_required,
+    seamless_contract_updated,
+    seamless_contract_not_updated,
+    out_of_contract,
+    make_contract_live,
+    make_contract_pricing,
+    make_contract_objection,
+    make_contract_locked,
+    contracts_removed,
+    contracts_lost,
+    bulk_quote_template,
+    export_commissions_to_excel,
+    export_expired_contracts,
+    export_corona_live_duplicates,
+    export_sse_live_duplicates,
+    export_to_excel_and_pdfs,
 )
 from .custom_search import CustomSearchAdmin
 from .resources import ContractResource
@@ -31,6 +47,7 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin, CustomSearchAdmin
                 "fields": (
                     ("client", "client_group", "business_name", "client_manager"),
                     "site_address",
+                    "seed_stock",
                     "supplier",
                     "utility",
                     "mpan_mpr",
@@ -161,6 +178,7 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin, CustomSearchAdmin
         UtilityTypeFilter,
         MultiStatusFilter,
         "seamless_status",
+        "seed_stock",
         "is_ooc",
         "is_directors_approval",
         ("contract_end_date", DateRangeFilter),
@@ -203,6 +221,7 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin, CustomSearchAdmin
         export_expired_contracts,
         export_corona_live_duplicates,
         export_sse_live_duplicates,
+        export_to_excel_and_pdfs,
     ]
 
 

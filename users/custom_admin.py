@@ -4,15 +4,19 @@ from django.utils.translation import gettext_lazy as _
 from import_export.admin import ImportExportModelAdmin, ExportActionMixin
 from contracts.models import Contract
 from clients.models import Client
-from contracts.filters import (ClientFilter, SupplierFilter, UtilityTypeFilter,
-                               MultiStatusFilter, )
+from contracts.filters import (
+    ClientFilter,
+    SupplierFilter,
+    UtilityTypeFilter,
+    MultiStatusFilter,
+)
 from rangefilter.filters import DateRangeFilter
 from contacts.models import Contact, JobTitle
 from commissions.models import ElectricityCommission, GasCommission
 from utilities.models import Supplier, Utility
 from contracts.admin_actions import bulk_quote_template
 from core.decorators import admin_changelist_link
-from .resources import ClientResource, ContactResource
+from .resources import ClientResource, ContactResource, ContractResource
 from contracts.custom_search import CustomSearchAdmin
 
 
@@ -22,7 +26,7 @@ class AccountManagerAdminSite(AdminSite):
     index_title = "Welcome to Energy Portfolio Account Manager Portal"
 
 
-account_manager_admin = AccountManagerAdminSite(name='account_manager_admin')
+account_manager_admin = AccountManagerAdminSite(name="account_manager_admin")
 
 
 class ContactInline(admin.TabularInline):
@@ -43,7 +47,7 @@ class GasCommissionInline(admin.TabularInline):
 class SupplierAdmin(admin.ModelAdmin):
     list_display = ("supplier", "meter_email", "suppliers_link")
     list_filter = ("supplier",)
-    search_fields = ('supplier',)
+    search_fields = ("supplier",)
     ordering = ("supplier",)
 
     @admin_changelist_link(
@@ -57,10 +61,11 @@ account_manager_admin.register(Supplier, SupplierAdmin)
 
 
 class UtilityAdmin(admin.ModelAdmin):
-    search_fields = ('utility',)
+    search_fields = ("utility",)
 
 
 account_manager_admin.register(Utility, UtilityAdmin)
+
 
 class ContactAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     resource_class = ContactResource
@@ -83,10 +88,12 @@ class JobTitleAdmin(admin.ModelAdmin):
 
 
 account_manager_admin.register(JobTitle, JobTitleAdmin)
+
+
 class ClientAdmin(ExportActionMixin, admin.ModelAdmin):
     show_full_result_count = False
     inlines = [ContactInline, ElectricityCommissionInline, GasCommissionInline]
-    readonly_fields = ['is_lost', 'client_lost_date', 'contracts_link']
+    readonly_fields = ["is_lost", "client_lost_date", "contracts_link"]
     resource_class = ClientResource
     list_per_page = 10
     list_display = (
@@ -100,8 +107,8 @@ class ClientAdmin(ExportActionMixin, admin.ModelAdmin):
         "loa",
         "contracts_link",
     )
-    list_filter = ('client', 'account_manager', "is_lost")
-    search_fields = ('client',)
+    list_filter = ("client", "account_manager", "is_lost")
+    search_fields = ("client",)
     ordering = ("client",)
 
     @admin_changelist_link(
@@ -115,7 +122,7 @@ account_manager_admin.register(Client, ClientAdmin)
 
 
 class ContractAdmin(ExportActionMixin, CustomSearchAdmin, admin.ModelAdmin):
-    readonly_fields = [field.name for field in Contract._meta.fields if field.name != 'notes']
+    readonly_fields = [field.name for field in Contract._meta.fields if field.name != "notes"]
 
     def has_change_permission(self, request, obj=None):
         return True
@@ -125,6 +132,7 @@ class ContractAdmin(ExportActionMixin, CustomSearchAdmin, admin.ModelAdmin):
             return self.readonly_fields
         return []
 
+    resource_class = ContractResource
     list_per_page = 10
     ordering = ("id",)
     list_display = (
@@ -256,9 +264,19 @@ class ContractAdmin(ExportActionMixin, CustomSearchAdmin, admin.ModelAdmin):
         ),
         ("Notes", {"description": "Additional Information", "fields": ("notes",)}),
     )
-    list_filter = ("contract_type", MultiStatusFilter, ClientFilter, SupplierFilter, UtilityTypeFilter, "is_ooc",
-                   "is_directors_approval", ("contract_end_date", DateRangeFilter),
-                   ("contract_start_date", DateRangeFilter), "meter_status", "vat_rate",)
+    list_filter = (
+        "contract_type",
+        MultiStatusFilter,
+        ClientFilter,
+        SupplierFilter,
+        UtilityTypeFilter,
+        "is_ooc",
+        "is_directors_approval",
+        ("contract_end_date", DateRangeFilter),
+        ("contract_start_date", DateRangeFilter),
+        "meter_status",
+        "vat_rate",
+    )
     search_fields = (
         "business_name",
         "client__client",

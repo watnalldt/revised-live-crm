@@ -6,6 +6,18 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 
 
+class ContactInline(admin.TabularInline):
+    model = Contact
+    extra = 1
+
+
+class JobTitleAdmin(admin.ModelAdmin):
+    inlines = (ContactInline,)
+
+
+admin.site.register(JobTitle, JobTitleAdmin)
+
+
 class ContactResource(resources.ModelResource):
     Client = fields.Field(
         column_name="client",
@@ -23,7 +35,13 @@ class ContactResource(resources.ModelResource):
         model = Contact
         skip_unchanged = True
         report_skipped = True
-        fields = ["id", "name", "email", "phone_number"]
+        fields = [
+            "id",
+            "name",
+            "email",
+            "phone_number",
+            "client" "job_title",
+        ]
         import_id_fields = ["id"]
 
         export_order = [
@@ -32,18 +50,6 @@ class ContactResource(resources.ModelResource):
             "email",
             "phone_number",
         ]
-
-
-class ContactInline(admin.TabularInline):
-    model = Contact
-    extra = 1
-
-
-class JobTitleAdmin(admin.ModelAdmin):
-    inlines = (ContactInline,)
-
-
-admin.site.register(JobTitle, JobTitleAdmin)
 
 
 class ContactAdmin(ImportExportModelAdmin, admin.ModelAdmin):
