@@ -62,3 +62,4 @@ pydotplus
 pandas
 matplotlib
 xlsxwriter
+reportlab
