@@ -1,6 +1,5 @@
 import pytest
 from django.utils import timezone
-from django.apps import apps
 from ..models import Client
 from ..signals import update_client_lost_date
 from django.contrib.auth import get_user_model
