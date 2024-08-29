@@ -138,6 +138,13 @@ class Contract(models.Model):
     contract_status = models.CharField(
         max_length=20, choices=ContractStatus.choices, default=ContractStatus.LIVE
     )
+    dwellent_id = models.CharField(
+        verbose_name="Dwellent ID", max_length=100, null=True, blank=True
+    )
+    bid_id = models.CharField(verbose_name="BID ID", max_length=100, null=True, blank=True)
+    portal_status = models.CharField(
+        verbose_name="Portal Status", max_length=255, null=True, blank=True
+    )
     client = models.ForeignKey(
         Client,
         on_delete=models.CASCADE,
@@ -344,6 +351,50 @@ class Contract(models.Model):
         verbose_name="Vat Declaration Expiry Date", null=True, blank=True
     )
     notes = models.TextField(null=True, blank=True)
+    future_contract_start_date = models.DateField(
+        verbose_name="Future Contract Start Date", null=True, blank=True
+    )
+
+    future_contract_end_date = models.DateField(
+        verbose_name="Future Contract End Date", null=True, blank=True
+    )
+    future_unit_rate_1 = models.DecimalField(
+        verbose_name="Future Unit Rate 1",
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True,
+    )
+    future_unit_rate_2 = models.DecimalField(
+        verbose_name="Future Unit Rate 2",
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True,
+    )
+    future_unit_rate_3 = models.DecimalField(
+        verbose_name="Future Unit Rate 3",
+        max_digits=9,
+        decimal_places=6,
+        null=True,
+        blank=True,
+    )
+
+    future_supplier = models.ForeignKey(
+        Supplier,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        verbose_name="Future Supplier",
+        related_name="future_suppliers",
+    )
+    future_standing_charge = models.DecimalField(
+        verbose_name="Future Standing Charge",
+        max_digits=8,
+        decimal_places=4,
+        null=True,
+        blank=True,
+    )
     history = HistoricalRecords()
 
     objects = ContractsManager()  # Default Manager
