@@ -8,7 +8,7 @@ from django.db.models import Max
 from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
 from datetime import datetime
 import csv
-import os
+
 
 class Command(BaseCommand):
     help = 'Import data from Excel file with unique ID handling and foreign key relationships'
