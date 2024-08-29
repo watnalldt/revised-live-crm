@@ -7,6 +7,7 @@ from .filters import (
     UtilityTypeFilter,
     MultiStatusFilter,
     AccountManagerFilter,
+    FutureSupplierFilter,
 )
 from rangefilter.filters import DateRangeFilter
 from .admin_actions import (
@@ -145,6 +146,21 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin, CustomSearchAdmin
                 ),
             },
         ),
+        (
+            "Future Contract Information",
+            {
+                "description": "Enter future contract information",
+                "fields": (
+                    "future_contract_start_date",
+                    "future_contract_end_date",
+                    "future_supplier",
+                    "future_unit_rate_1",
+                    "future_unit_rate_2",
+                    "future_unit_rate_3",
+                    "future_standing_charge",
+                ),
+            },
+        ),
         ("Notes", {"description": "Additional Information", "fields": ("notes",)}),
     )
     list_display = (
@@ -186,6 +202,7 @@ class ContractAdmin(ImportExportModelAdmin, ExportActionMixin, CustomSearchAdmin
         "vat_rate",
         "vat_declaration_sent",
         "meter_status",
+        FutureSupplierFilter,
     ]
     autocomplete_fields = [
         "client",

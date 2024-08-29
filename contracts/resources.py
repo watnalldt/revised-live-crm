@@ -23,6 +23,11 @@ class ContractResource(resources.ModelResource):
     utility = fields.Field(
         column_name="utility", attribute="utility", widget=ForeignKeyWidget(Utility, "utility")
     )
+    future_supplier = fields.Field(
+        column_name="future_supplier",
+        attribute="future_supplier",
+        widget=ForeignKeyWidget(Supplier, "supplier"),
+    )
 
     class Meta:
         model = Contract

@@ -25,6 +25,11 @@ class UtilityTypeFilter(AutocompleteFilter):
     field_name = "utility"  # name of the foreign key field
 
 
+class FutureSupplierFilter(AutocompleteFilter):
+    title = "Future Supplier"  # display title
+    field_name = "future_supplier"  # name of the foreign key field
+
+
 # Custom Filters ----------------------------------------------------------------
 class AccountManagerFilter(admin.SimpleListFilter):
     title = "Account Manager"
