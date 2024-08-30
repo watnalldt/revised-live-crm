@@ -136,20 +136,20 @@ class Command(BaseCommand):
                         return date_string
             return date_string
 
-        def convert_decimal(decimal_value, places):
-            if decimal_value is not None and decimal_value != "":
+        def convert_decimal(value, decimal_places):
+            if value is not None and value != "":
                 try:
-                    return Decimal(decimal_value).quantize(
-                        Decimal(f'0.{"0" * places}'), rounding=ROUND_HALF_UP
+                    return Decimal(value).quantize(
+                        Decimal(f'0.{"0" * decimal_places}'), rounding=ROUND_HALF_UP
                     )
                 except InvalidOperation:
                     self.stdout.write(
                         self.style.WARNING(
-                            f"Invalid decimal value: {decimal_value}. Keeping original value."
+                            f"Invalid decimal value: {value}. Keeping original value."
                         )
                     )
-                    return decimal_value
-            return decimal_value
+                    return value
+            return value
 
         try:
             workbook = openpyxl.load_workbook(file_path)
